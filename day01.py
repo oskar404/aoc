@@ -18,7 +18,7 @@ def solve_part2(file):
             input.append(int(line))
     freqs = set()
     sum = 0
-    while True: 
+    while True:
         for item in input:
             if sum in freqs:
                 return sum
