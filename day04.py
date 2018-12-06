@@ -7,13 +7,13 @@ from time import strftime, strptime
 
 class LogEntry(object):
     """Container for log entries
-    
+
     Log entries can be like:
         [1518-11-01 00:00] Guard #10 begins shift
         [1518-11-01 00:05] falls asleep
         [1518-11-01 00:25] wakes up
     """
-    
+
     def __init__(self, line):
         timestamp, entry = line.strip().split('] ')
         self.ts = strptime(timestamp, '[%Y-%m-%d %H:%M')
@@ -58,7 +58,7 @@ def dump_histograms(histograms):
         h_str = ''
         for e in hist:
             h_str += '{0: >2}'.format(e if e > 0 else '--')
-        print('{:>6}: {}'.format(id, h_str))       
+        print('{:>6}: {}'.format(id, h_str))
 
 
 def add_histogram(hist, start, end = 59):
@@ -69,7 +69,7 @@ def add_histogram(hist, start, end = 59):
 def calculate_histograms(input):
     """Calculate sleep histograms for guards who sleep"""
     sleep_times = {}
-    
+
     entry = None
     for next in input:
         if entry and entry.sleep:
@@ -80,23 +80,23 @@ def calculate_histograms(input):
             add_histogram(hist, start, end)
             sleep_times[guard] = hist
         entry = next
-        
-    # Handle last entry    
+
+    # Handle last entry
     if entry and entry.sleep:
         guard = entry.guard
         hist = sleep_times.get(guard, [0]*60)
         add_histogram(hist, entry.get_min())
         sleep_times[guard] = hist
-    
-    return sleep_times    
+
+    return sleep_times
 
 
 def solve_part1(input):
     sleep_times = calculate_histograms(input)
-    
-    dump_histograms(sleep_times)          
-    
-    bad_guard = 0    
+
+    dump_histograms(sleep_times)
+
+    bad_guard = 0
     bad_hist = None
     max_mins = 0
     for guard, hist in sleep_times.items():
@@ -105,21 +105,21 @@ def solve_part1(input):
             max_mins = mins
             bad_guard = guard
             bad_hist = hist
-    
+
     bad_min = 0
     max_min = 0
     for i in range(0,59):
         if bad_hist[i] > max_min:
             max_min = hist[i]
             bad_min = i
-            
+
     return (bad_guard, max_mins, bad_min, bad_guard*bad_min)
 
 
 def solve_part2(input):
     sleep_times = calculate_histograms(input)
-    
-    bad_guard = 0    
+
+    bad_guard = 0
     bad_min = 0
     max_min = 0
     bad_hist = None
@@ -130,7 +130,7 @@ def solve_part2(input):
             bad_guard = guard
             bad_hist = hist
             bad_min = hist.index(local_max)
-    
+
     return (bad_guard, sum(bad_hist), bad_min, bad_guard*bad_min)
 
 
