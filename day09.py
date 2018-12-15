@@ -2,6 +2,7 @@
 
 import sys
 import timeit
+# Better/faster solution would have been a linked list/tied to a circle
 from blist import blist
 
 
