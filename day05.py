@@ -46,26 +46,26 @@ def processor(data, io):
     def add(idx, modes):
         """Addition operator: 01, arg, arg, result"""
         prog[prog[idx+3]] = read(idx+1, modes[0]) + read(idx+2, modes[1])
-        return 4
+        return idx+4
 
     def mul(idx, modes):
         """Multiplication operator: 02, arg, arg, result*"""
         prog[prog[idx+3]] = read(idx+1, modes[0]) * read(idx+2, modes[1])
-        return 4
+        return idx+4
 
     def inp(idx, modes):
         """Take input operator: 03, read input"""
         prog[prog[idx+3]] = io.input()
-        return 2
+        return idx+2
 
     def out(idx, modes):
         """Output operator: 04, output value"""
         io.output(read(idx+1, modes[0]))
-        return 2
+        return idx+2
 
     def halt(idx, modes):
         """Halt operator: 99"""
-        return 0
+        return -1
 
     operands = {
         1: add,
@@ -85,10 +85,8 @@ def processor(data, io):
             code, modes = parse_opcode(prog[idx])
             opcode = operands.get(code)
             assert opcode, f"operation failed at {idx} with opcode: {prog[idx]}"
-            inc = opcode(idx, modes)
-            if inc > 0:
-                idx += inc
-            else:
+            idx = opcode(idx, modes)
+            if idx < 0:
                 return prog
     except IndexError:
         assert False, f"Invalid index: {idx}"
