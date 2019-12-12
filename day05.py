@@ -10,14 +10,25 @@ def read_data(file):
 
 class IOInterface:
     """Simple IO Interface implementation"""
-    outputs = []
+
+    def __init__(self, value=1):
+        self.stdout = []
+        self.line = 0
+        self.stdin = value
 
     def input(self):
-        return 1
+        return self.stdin
 
     def output(self, value):
-        self.outputs.append(value)
-        print(f"stdout: {value}")
+        self.stdout.append(value)
+        self.line += 1
+        print(f"{self.line: >3}: {value}")
+
+    def __str__(self):
+        return f"stdin:{self.stdin} stdout:{self.stdout}"
+
+    def __repr__(self):
+        return f"stdin:{self.stdin} stdout:{self.stdout}"
 
 
 def processor(data, io):
@@ -32,7 +43,7 @@ def processor(data, io):
         modes = [int(code/100)%10, int(code/1000)%10, int(code/10000)%10]
         return opcode, modes
 
-    def read(idx, mode):
+    def readreg(idx, mode):
         """Read parameter based on mode"""
         if mode == 0:
             # position mode
@@ -45,23 +56,51 @@ def processor(data, io):
 
     def add(idx, modes):
         """Addition operator: 01, arg, arg, result"""
-        prog[prog[idx+3]] = read(idx+1, modes[0]) + read(idx+2, modes[1])
+        prog[prog[idx+3]] = readreg(idx+1, modes[0]) + readreg(idx+2, modes[1])
         return idx+4
 
-    def mul(idx, modes):
+    def multiply(idx, modes):
         """Multiplication operator: 02, arg, arg, result*"""
-        prog[prog[idx+3]] = read(idx+1, modes[0]) * read(idx+2, modes[1])
+        prog[prog[idx+3]] = readreg(idx+1, modes[0]) * readreg(idx+2, modes[1])
         return idx+4
 
-    def inp(idx, modes):
-        """Take input operator: 03, read input"""
-        prog[prog[idx+3]] = io.input()
+    def read_input(idx, modes):
+        """Take input operator: 03, arg <- read input to arg"""
+        prog[prog[idx+1]] = io.input()
         return idx+2
 
-    def out(idx, modes):
-        """Output operator: 04, output value"""
-        io.output(read(idx+1, modes[0]))
+    def write_output(idx, modes):
+        """Output operator: 04, arg -> write arg to output output"""
+        io.output(readreg(idx+1, modes[0]))
         return idx+2
+
+    def jmp_if_true(idx, modes):
+        """Jump-if-true operator: 05, arg, result"""
+        if readreg(idx+1, modes[0]) != 0:
+            return prog[idx+2]
+        return idx+3
+
+    def jmp_if_false(idx, modes):
+        """Jump-if-false operator: 06, arg, result"""
+        if readreg(idx+1, modes[0]) == 0:
+            return prog[idx+2]
+        return idx+3
+
+    def less_than(idx, modes):
+        """Less-than operator: 07, arg, arg, result"""
+        if readreg(idx+1, modes[0]) < readreg(idx+2, modes[1]):
+            prog[prog[idx+3]] = 1
+        else:
+            prog[prog[idx+3]] = 0
+        return idx+4
+
+    def equals(idx, modes):
+        """Less-than operator: 08, arg, arg, result"""
+        if readreg(idx+1, modes[0]) == readreg(idx+2, modes[1]):
+            prog[prog[idx+3]] = 1
+        else:
+            prog[prog[idx+3]] = 0
+        return idx+4
 
     def halt(idx, modes):
         """Halt operator: 99"""
@@ -69,9 +108,13 @@ def processor(data, io):
 
     operands = {
         1: add,
-        2: mul,
-        3: inp,
-        4: out,
+        2: multiply,
+        3: read_input,
+        4: write_output,
+        5: jmp_if_true,
+        6: jmp_if_true,
+        7: less_than,
+        8: equals,
         99: halt
     }
 
@@ -95,9 +138,15 @@ def processor(data, io):
 def self_test():
     io1 = IOInterface()
     processor([3, 0, 4, 0, 99], io1)
-    assert len(io1.outputs) == 1 and io1.outputs[0] == 1
+    assert len(io1.stdout) == 1 and io1.stdout[0] == 1
     result = processor([1002, 4, 3, 4, 33], IOInterface())
     assert result == [1002, 4, 3, 4, 99]
+    io2 = IOInterface(value=8)
+    result = processor([3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8], io2)
+    assert len(io2.stdout) == 1 and io2.stdout[0] == 1
+    io3 = IOInterface(value=88)
+    processor([3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8], io3)
+    assert len(io3.stdout) == 1 and io3.stdout[0] == 0
 
 
 assert len(sys.argv) == 2, "Missing input"
@@ -108,3 +157,5 @@ else:
     data = read_data(sys.argv[1])
     io = IOInterface()
     result = processor(data, io)
+    io2 = IOInterface(value=5)
+    result = processor(data, io2)
