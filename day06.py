@@ -13,23 +13,46 @@ def read_data(file):
     return data
 
 
-def recurse_orbits(planet, count, data):
+def recurse_orbits(planet, data, count):
     """Orbit count with recursion. Not very efficient implementation, but works"""
     if planet in data:
         next_planet = data[planet]
-        return recurse_orbits(next_planet, count+1, data)
+        return recurse_orbits(next_planet, data, count+1)
     return count
 
 
 def orbit_checksum(data):
     chksum = 0
     for planet in data:
-        chksum += recurse_orbits(planet, 0, data)
+        chksum += recurse_orbits(planet, data,  0)
     return chksum
+
+
+def orbit_path(planet, data, path):
+    """Resolve the path to center of planetary system. Use recursion"""
+    if planet in data:
+        path.append(data[planet])
+        return orbit_path(path[-1], data, path)
+    return path
+
+
+def path_to_santa(data):
+    orbits1 = orbit_path('YOU', data, [])
+    orbits2 = orbit_path('SAN', data, [])
+    prev = None
+    while orbits1[-1] == orbits2[-1]:
+         prev = orbits1[-1]
+         orbits1 = orbits1[:-1]
+         orbits2 = orbits2[:-1]
+    path = orbits1
+    path.append(prev)
+    orbits2.reverse()
+    return path + orbits2
 
 
 assert len(sys.argv) == 2, "Missing input"
 data = read_data(sys.argv[1])
 print(f"Orbit checksum: {orbit_checksum(data)}")
-#(distance, position) = resolve_shortest_distance(data)
-#print(f"Shortest intersect: {distance} ({position.real},{position.imag})")
+path = path_to_santa(data)
+print(f"Path to santa: {path})")
+print(f"Orbit hops to santa: {len(path)-1}")
