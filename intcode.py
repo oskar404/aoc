@@ -47,27 +47,52 @@ class IntCodeState:
 
     Returns True if halted. If False waiting for input."""
 
-    def __init__(self, data):
+    def __init__(self, data, debug=False):
         """Load program into this state"""
         self.prog = data.copy()  # Processor byte code
-        self.idx = 0             # Current instruction
+        self._idx = 0             # Current instruction
         self._halt = False       # Processor in halt state
+        self._relative_base = 0
+        self._dbg = debug
 
-    def read(self, offset=0):
+    @property
+    def idx(self):
+        """Return current program index"""
+        return self._idx
+
+    @property
+    def base(self):
+        """Return relative base"""
+        return self._relative_base
+
+    def read(self, offset=0, addr=None):
         """Return value from memory"""
-        return self.prog[self.idx + offset]
+        ptr = addr if addr != None else self._idx + offset
+        assert ptr >= 0, f"Invalid read(offset={offset}) from: {ptr}"
+        if ptr >= len(self.prog):
+            return 0
+        return self.prog[ptr]
 
     def writ(self, value, offset=0):
-        """Write value to memory"""
-        self.prog[self.prog[self.idx + offset]] = value
+        """Write value to memory, extend memory if no space"""
+        ptr = self.read(offset)
+        if ptr >= len(self.prog):
+            self.prog.extend([0] * ((ptr + 1) - len(self.prog)))
+        if self._dbg:
+            print(f"writ({value},offset={offset}) -> self.prog[{ptr}]")
+        self.prog[ptr] = value
 
     def next(self, offset=0):
         """Progress to next instruction"""
-        self.idx += offset
+        self._idx += offset
+
+    def rbse(self, offset=0):
+        """Set relative base"""
+        self._relative_base += offset
 
     def jump(self, ptr):
         """Jump to instruction"""
-        self.idx = ptr
+        self._idx = ptr
 
     def halt(self):
         """Return true if halted"""
@@ -86,11 +111,14 @@ class IntCodeState:
 
     def parm(self, offset, mode):
         """Read parameter based on mode"""
-        ptr = self.idx + offset
-        value = self.prog[ptr]
-        if mode == 0:   # position mode
-            return self.prog[value]
-        return value    # immediate mode
+        value = self.read(offset)
+        if mode == 0:       # position mode
+            return self.read(addr=value)
+        elif mode == 1:     # immediate mode
+            return value
+        elif mode == 2:     # relative mode
+            return self.read(addr=self._relative_base+value)
+        assert False, f"Failed with mode: {mode}"
 
 
 def null_debugger(*args):
@@ -104,7 +132,7 @@ def cmd_debugger(state, cmd, modes, args, result):
     for i in range(args):
         arglist.append(state.read(i+1))
     res = state.read(args+1) if result else '<undef>'
-    print(f"{cmd}({arglist}) -> {res} [idx:{state.idx},modes:{modes}]")
+    print(f"{cmd}({arglist} m:{modes}) -> {res} [idx:{state.idx},base:{state.base}]")
 
 
 def run(state, io, debug=null_debugger):
@@ -128,7 +156,7 @@ def run(state, io, debug=null_debugger):
         """Take input operator: 03, arg <- read input to arg"""
         debug(state, 'read_input', modes, 0, True)
         if io.has_in():
-            state.writ(io.read_in(), 1)
+            state.writ(io.read_in(), offset=1)
             state.next(2)
             return True
         return False
@@ -178,6 +206,13 @@ def run(state, io, debug=null_debugger):
         state.next(4)
         return True
 
+    def set_relative_base(modes):
+        """Set relative base operator: 09, arg -> change relative base"""
+        debug(state, 'relative_base', modes, 1, False)
+        state.rbse(state.parm(1, modes[0]))
+        state.next(2)
+        return True
+
     def halt(modes):
         """Halt operator: 99"""
         debug(state, 'halt', modes, 0, False)
@@ -194,6 +229,7 @@ def run(state, io, debug=null_debugger):
         6: jmp_if_false,
         7: less_than,
         8: equals,
+        9: set_relative_base,
         99: halt
     }
 
