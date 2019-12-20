@@ -2,6 +2,7 @@
 
 import sys
 
+
 def read_data(file):
     with open(file) as f:
         return str(f.read())

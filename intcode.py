@@ -50,7 +50,7 @@ class IntCodeState:
     def __init__(self, data, debug=False):
         """Load program into this state"""
         self.prog = data.copy()  # Processor byte code
-        self._idx = 0             # Current instruction
+        self._idx = 0            # Current instruction
         self._halt = False       # Processor in halt state
         self._relative_base = 0
         self._dbg = debug

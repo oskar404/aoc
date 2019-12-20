@@ -3,6 +3,7 @@
 import sys
 import intcode
 
+
 def read_data(file):
     with open(file) as f:
         return [int(i) for i in f.read().split(',')]

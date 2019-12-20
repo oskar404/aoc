@@ -3,11 +3,28 @@ import intcode
 from intcode import run, IntCodeIO, IntCodeState
 
 
+def run_prog(data, result, halted=True):
+    state = IntCodeState(data)
+    halt_state = run(state, IntCodeIO())
+    assert state.prog == result
+    assert halt_state == halted
+
+
 def run_intcode(data, io_if, result, halted=True):
     state = IntCodeState(data)
     halt_state = run(state, io_if)
     assert len(io_if.stdout) == 1 and io_if.stdout[0] == result
     assert halt_state == halted
+
+
+def test_add_operator():
+    run_prog([1,0,0,0,99], [2,0,0,0,99])
+    run_prog([1,1,1,4,99,5,6,0,99],[30,1,1,4,2,5,6,0,99])
+
+
+def test_multiplication_operator():
+    run_prog([2,3,0,3,99], [2,3,0,6,99])
+    run_prog([2,4,4,5,99,0], [2,4,4,5,99,9801])
 
 
 def test_basic_io():
