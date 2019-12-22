@@ -2,6 +2,7 @@
 
 import math
 import sys
+from collections import OrderedDict
 
 
 def read_data(file):
@@ -30,8 +31,11 @@ def angle(start, end):
     return result
 
 
+def dist(start, end):
+    return abs((end[0]-start[0])+(end[1]-start[1]))
 
-def solve_optimal_position(data):
+
+def optimal_position(data):
     """Solve optimal position for asteroid monitoring station"""
     asteroids = asteroid_coordinates(data)
     evaluation = {}  # Number of visible asteroids dict
@@ -42,12 +46,35 @@ def solve_optimal_position(data):
     return location, evaluation[location]
 
 
+def vaporize(data, lazr):
+    """Giant Asteroid Vaporizer Lazer rotator"""
+    asteroids = asteroid_coordinates(data)
+    asteroids.remove(lazr)
+    angles = {}
+    for p in asteroids:
+        a = angle(lazr, p)
+        while a in angles:
+            d = dist(lazr, p)
+            p0 = angles[a]
+            d0 = dist(lazr, p0)
+            if d > d0:
+                p, p0 = p0, p
+            angles[a] = p
+            a += 360
+            p = p0
+        angles[a] = p
+    return list(OrderedDict(sorted(angles.items())).values())
+
+
 def main():
     assert len(sys.argv) == 2, "Missing input"
 
     data = read_data(sys.argv[1])
-    loc, detected = solve_optimal_position(data)
+    loc, detected = optimal_position(data)
     print(f"Monitoring station position: {loc} detected: {detected}")
+    order = vaporize(data, loc)
+    bet = order[199][0]*100 + order[199][1]
+    print(f"200th asteroid: {order[199]} -> {bet}")
 
 
 if __name__ == "__main__":

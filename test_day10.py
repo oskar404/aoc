@@ -10,7 +10,7 @@ def test_data1():
         '....#',
         '...##'
     ]
-    pos, det = day10.solve_optimal_position(data)
+    pos, det = day10.optimal_position(data)
     assert pos == (3,4)
     assert det == 8
 
@@ -28,7 +28,7 @@ def test_data2():
         '##...#..#.',
         '.#....####'
     ]
-    pos, det = day10.solve_optimal_position(data)
+    pos, det = day10.optimal_position(data)
     assert pos == (5,8)
     assert det == 33
 
@@ -46,7 +46,7 @@ def test_data3():
         '......#...',
         '.####.###.'
     ]
-    pos, det = day10.solve_optimal_position(data)
+    pos, det = day10.optimal_position(data)
     assert pos == (1,2)
     assert det == 35
 
@@ -64,7 +64,7 @@ def test_data4():
         '.##...##.#',
         '.....#.#..'
     ]
-    pos, det = day10.solve_optimal_position(data)
+    pos, det = day10.optimal_position(data)
     assert pos == (6,3)
     assert det == 41
 
@@ -92,6 +92,25 @@ def test_data5():
         '#.#.#.#####.####.###',
         '###.##.####.##.#..##'
     ]
-    pos, det = day10.solve_optimal_position(data)
+    pos, det = day10.optimal_position(data)
     assert pos == (11,13)
     assert det == 210
+
+
+def test_vaporize1():
+    data = [
+        '.#....#####...#..',
+        '##...##.#####..##',
+        '##...#...#.#####.',
+        '..#.....#...###..',
+        '..#.#.....#....##'
+    ]
+    reference = [
+        (8, 1), (9, 0), (9, 1), (10, 0), (9, 2), (11, 1), (12, 1), (11, 2),
+        (15, 1), (12, 2), (13, 2), (14, 2), (15, 2), (12, 3), (16, 4), (15, 4),
+        (10, 4), (4, 4), (2, 4), (2, 3), (0, 2), (1, 2), (0, 1), (1, 1), (5, 2),
+        (1, 0), (5, 1), (6, 1), (6, 0), (7, 0), (8, 0), (10, 1), (14, 0),
+        (16, 1), (13, 3), (14, 3)
+    ]
+    order = day10.vaporize(data, (8,3))
+    assert order == reference
