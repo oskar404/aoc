@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import copy
 import sys
 
 
@@ -44,13 +45,28 @@ class Moon:
         for i in range(3):
             self._pos[i] += self._vel[i]
 
-    def __repr__(self):
-        return str(self)
-
-    def __str__(self):
+    def to_str(self):
         p = self._pos
         v = self._vel
         return f"{self.id:<8} pos=<x={p[0]}, y={p[1]}, z={p[2]}>, vel=<x={v[0]}, y={v[1]}, z={v[2]}>"
+
+    def clone(self, memo = None):
+        m = Moon(self.id, copy.deepcopy(self.position))
+        m._vel = copy.deepcopy(self.velocity)
+        return m
+
+    __copy__ = clone
+    __deepcopy__ = clone
+    __repr__ = to_str
+    __str__ = to_str
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return (self.id == other.id and
+                self.position == other.position and
+                self.velocity == other.velocity)
+        else:
+            return False
 
 
 def read_data(file):
@@ -96,6 +112,32 @@ def total_energy(moons):
     for m in moons:
         energy += m.potential_energy * m.kinetic_energy
     return energy
+
+
+def naive_search(moons, debug = no_dump):
+    """Search cycle just by iterating until found"""
+    debug(0, moons)
+    rounds = 0
+    initial = copy.deepcopy(moons)
+    while True:
+        rounds += 1
+        for m in moons:
+            for n in moons:
+                if n.id != m.id:
+                    m.apply_gravity(n)
+        for m in moons:
+            m.apply_velocity()
+        if initial == moons:
+            debug(rounds, moons)
+            return rounds
+
+
+def cycle_search(moons, debug = no_dump):
+    """Search cycle for each axis separately"""
+    debug(0, moons)
+    rounds = 0
+    # logic missing ..
+    return rounds
 
 
 def main():
