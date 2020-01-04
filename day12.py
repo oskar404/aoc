@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import copy
+import math
 import sys
+from functools import reduce
 
 
 def _gravity(lhs, rhs):
@@ -85,8 +87,8 @@ def read_data(file):
     return data
 
 
-def dump(number, moons):
-    print(f"step: {number}")
+def dump(step, moons):
+    print(f"step: {step}")
     for m in moons:
         print(m)
 
@@ -105,6 +107,7 @@ def simulate(moons, rounds = 1000, debug = no_dump):
         for m in moons:
             m.apply_velocity()
         debug(i, moons)
+    return moons
 
 
 def total_energy(moons):
@@ -117,10 +120,10 @@ def total_energy(moons):
 def naive_search(moons, debug = no_dump):
     """Search cycle just by iterating until found"""
     debug(0, moons)
-    rounds = 0
+    step = 0
     initial = copy.deepcopy(moons)
     while True:
-        rounds += 1
+        step += 1
         for m in moons:
             for n in moons:
                 if n.id != m.id:
@@ -128,24 +131,45 @@ def naive_search(moons, debug = no_dump):
         for m in moons:
             m.apply_velocity()
         if initial == moons:
-            debug(rounds, moons)
-            return rounds
+            debug(step, moons)
+            return step
 
 
 def cycle_search(moons, debug = no_dump):
     """Search cycle for each axis separately"""
+    # This solution was inspired by the reddit thread
+    # https://www.reddit.com/r/adventofcode/comments/e9j0ve/2019_day_12_solutions/
+    def _axis(p):
+        p0 = p[:]
+        v = [0] * len(p)
+        v0 = v[:]
+        step = 0
+        while True:
+            step += 1
+            for i in range(len(v)):
+                v_change = sum([_gravity(p[i], p[j]) for j in range(len(p))])
+                v[i] += v_change
+            p = [p[i] + v[i] for i in range(len(p))]
+            if p0 == p and v0 == v:
+                break
+        return step
+
+    def _lcm(p1, p2):
+        return p1 * p2 // math.gcd(p1, p2)
+
     debug(0, moons)
-    rounds = 0
-    # logic missing ..
-    return rounds
+    rx = _axis([m.position[0] for m in moons])
+    ry = _axis([m.position[1] for m in moons])
+    rz = _axis([m.position[2] for m in moons])
+    return reduce(_lcm, [rx, ry, rz])
 
 
 def main():
     assert len(sys.argv) == 2, "Missing input"
     data = read_data(sys.argv[1])
-    simulate(data)
-    dump(1000, data)
-    print(f"Total energy after 1000 steps: {total_energy(data)}")
+    simulated_data = simulate(copy.deepcopy(data))
+    print(f"Total energy after 1000 steps: {total_energy(simulated_data)}")
+    print(f"Number of steps to repeat: {cycle_search(data)}")
 
 
 if __name__ == "__main__":

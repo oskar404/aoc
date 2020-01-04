@@ -63,16 +63,25 @@ def test_data2():
     assert total_energy(data) == 1940
 
 
-def test_cycle_for_data1():
+def test_naivesearch_for_data1():
     data = [
         Moon('A', [-1, 0, 2]),
         Moon('B', [2, -10, -7]),
         Moon('C', [4, -8, 8]),
         Moon('D', [3, 5, -1])
     ]
-    initial = copy.deepcopy(data)
     rounds = naive_search(data, debug = dump)
-    assert initial == data
+    assert rounds == 2772
+
+
+def test_cyclesearch_for_data1():
+    data = [
+        Moon('A', [-1, 0, 2]),
+        Moon('B', [2, -10, -7]),
+        Moon('C', [4, -8, 8]),
+        Moon('D', [3, 5, -1])
+    ]
+    rounds = cycle_search(data, debug = dump)
     assert rounds == 2772
 
 
@@ -83,7 +92,5 @@ def test_cycle_for_data2():
         Moon('C', [2, -7, 3]),
         Moon('D', [9, -8, -3])
     ]
-    initial = copy.deepcopy(data)
     rounds = cycle_search(data, debug = dump)
-    assert initial == data
     assert rounds == 4686774924
