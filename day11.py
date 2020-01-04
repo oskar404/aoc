@@ -77,11 +77,11 @@ class RobotIO:
 
 
 def run_robot(data, start_color=0):
-    """Output the BOOST code"""
+    """RUn the robot with IntCode computer"""
     io = RobotIO(start=start_color)
     state = IntCodeState(data)
     halted = intcode.run(state, io)
-    assert halted, f"BOOST code not halted"
+    assert halted, f"Robot not halted"
     return io.hull
 
 
