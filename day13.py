@@ -36,10 +36,18 @@ class ArcadeIO:
         self._screen = [[' ']]   # Screen array of arrays
         self._px = None
         self._py = None
+        self._input = []
+        self._score = 0
+        self._ball = 0
+        self._paddle = 0
 
     @property
     def screen(self):
         return self._screen
+
+    @property
+    def score(self):
+        return self._score
 
     def _draw(self, x, y, tile):
         """Draw tile to screen and enlarge it if needed"""
@@ -50,15 +58,17 @@ class ArcadeIO:
         self._screen[y][x] = tile
 
     def read_in(self):
-        """Unsupported for ArcadeIO"""
-        assert False
+        """Return joy stick movements"""
+        if self._ball > self._paddle:
+            return 1
+        return -1 if self._paddle > self._ball else 0
 
     def has_in(self):
-        """Return False always"""
-        return False
+        """Return True always"""
+        return True
 
     def add_in(self, value):
-        """Unsupported for ArcadeIO"""
+        """Unsupported in ArcadeIO"""
         assert False
 
     def write_out(self, value):
@@ -68,7 +78,14 @@ class ArcadeIO:
         elif self._py == None:
             self._py = value
         else:
-            self._draw(self._px, self._py, ArcadeIO.tile[value])
+            if self._px >= 0:
+                self._draw(self._px, self._py, ArcadeIO.tile[value])
+                if value == 4:
+                    self._ball = self._px
+                elif value == 3:
+                    self._paddle = self._px
+            else:
+                self._score = value
             self._px = None
             self._py = None
 
@@ -89,23 +106,27 @@ def render(screen):
         print(''.join(r))
 
 
-def play_game(data):
+def play_game(data, coins=None):
     io = ArcadeIO()
     state = IntCodeState(data)
+    if coins:
+        state.prog[0] = coins
     halted = intcode.run(state, io)
-    assert halted, f"Arcade gmae not halted properly"
+    assert halted, f"Game halted"
     render(io.screen)
     blocks = 0
     for x in range(len(io.screen)):
         blocks += sum([1 if p == 'B' else 0 for p in io.screen[x]])
-    return blocks
+    return blocks, io.score
 
 
 def main():
     assert len(sys.argv) == 2, "Missing input"
     data = read_data(sys.argv[1])
-    blocks = play_game(data)
+    blocks, _ = play_game(data)
     print(f"Number of block tiles: {blocks}")
+    _, score = play_game(data, 2)
+    print(f"High score: {score}")
 
 
 if __name__ == "__main__":
