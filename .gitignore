@@ -1,6 +1,7 @@
 # Project dependent
 /test.txt
 /test.py
+/hack.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
