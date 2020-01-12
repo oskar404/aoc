@@ -98,15 +98,30 @@ def test_basic_factory():
     factory.reset()
 
 
-def run_factory(input):
-    data = parse_data(input)
-    factory = NanoFactory(data)
-    return factory.run()
-
-
 def test_with_examples():
+    def run_factory(input):
+        data = parse_data(input)
+        factory = NanoFactory(data)
+        return factory.run()
+
     assert run_factory(data1) == 31
     assert run_factory(data2) == 165
     assert run_factory(data3) == 13312
     assert run_factory(data4) == 180697
     assert run_factory(data5) == 2210736
+
+
+def test_max_production():
+    """
+        data3 -> The 13312 ORE-per-FUEL example could produce 82892753 FUEL.
+        data4 -> The 180697 ORE-per-FUEL example could produce 5586022 FUEL.
+        data5 -> The 2210736 ORE-per-FUEL example could produce 460664 FUEL.
+    """
+    def run_factory(input):
+        data = parse_data(input)
+        factory = NanoFactory(data)
+        return factory.run_production()
+
+    assert run_factory(data3) == 82892753
+    assert run_factory(data4) == 5586022
+    assert run_factory(data5) == 460664
