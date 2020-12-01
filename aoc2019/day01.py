@@ -5,11 +5,12 @@ import sys
 
 # First 'simple' solution
 
+
 def solve_part1(file):
     total = 0
     with open(file) as f:
         for line in f:
-            total += int(line)//3-2
+            total += int(line) // 3 - 2
     return total
 
 
@@ -17,7 +18,7 @@ def fuel_requirement(mass):
     total = 0
     fuel = mass
     while True:
-        fuel = fuel//3-2
+        fuel = fuel // 3 - 2
         if fuel <= 0:
             break
         total += fuel
@@ -39,12 +40,14 @@ print(f"Fuel requirements (for modules+fuel): {solve_part2(sys.argv[1])}")
 
 # Solve problem with list comprehension magic
 
+
 def read_data(file):
     with open(file) as f:
         return [int(line) for line in f]
 
+
 data = read_data(sys.argv[1])
-result1 = sum([i//3-2 for i in data])
+result1 = sum([i // 3 - 2 for i in data])
 print(f"Fuel requirements (for modules): {result1}")
 result2 = sum([fuel_requirement(i) for i in data])
 print(f"Fuel requirements (for modules+fuel): {result2}")

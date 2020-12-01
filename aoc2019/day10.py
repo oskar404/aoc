@@ -19,8 +19,8 @@ def asteroid_coordinates(data):
     asteroids = []
     for y, line in enumerate(data):
         for x, c in enumerate(line):
-            if c == '#':
-                asteroids.append((x,y))
+            if c == "#":
+                asteroids.append((x, y))
     return asteroids
 
 
@@ -32,7 +32,7 @@ def angle(start, end):
 
 
 def dist(start, end):
-    return abs((end[0]-start[0])+(end[1]-start[1]))
+    return abs((end[0] - start[0]) + (end[1] - start[1]))
 
 
 def optimal_position(data):
@@ -40,9 +40,9 @@ def optimal_position(data):
     asteroids = asteroid_coordinates(data)
     evaluation = {}  # Number of visible asteroids dict
     for pos in asteroids:
-        seen_asteroids = { angle(pos, x) for x in asteroids if pos != x }
+        seen_asteroids = {angle(pos, x) for x in asteroids if pos != x}
         evaluation[pos] = len(seen_asteroids)
-    location = max(evaluation.keys(), key=(lambda k:evaluation[k]))
+    location = max(evaluation.keys(), key=(lambda k: evaluation[k]))
     return location, evaluation[location]
 
 
@@ -73,7 +73,7 @@ def main():
     loc, detected = optimal_position(data)
     print(f"Monitoring station position: {loc} detected: {detected}")
     order = vaporize(data, loc)
-    bet = order[199][0]*100 + order[199][1]
+    bet = order[199][0] * 100 + order[199][1]
     print(f"200th asteroid: {order[199]} -> {bet}")
 
 

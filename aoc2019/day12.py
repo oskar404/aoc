@@ -13,7 +13,6 @@ def _gravity(lhs, rhs):
 
 
 class Moon:
-
     def __init__(self, name, position):
         self._pos = position  # Expect position to be list
         self._name = name
@@ -52,7 +51,7 @@ class Moon:
         v = self._vel
         return f"{self.id:<8} pos=<x={p[0]}, y={p[1]}, z={p[2]}>, vel=<x={v[0]}, y={v[1]}, z={v[2]}>"
 
-    def clone(self, memo = None):
+    def clone(self, memo=None):
         m = Moon(self.id, copy.deepcopy(self.position))
         m._vel = copy.deepcopy(self.velocity)
         return m
@@ -64,23 +63,26 @@ class Moon:
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            return (self.id == other.id and
-                self.position == other.position and
-                self.velocity == other.velocity)
+            return (
+                self.id == other.id
+                and self.position == other.position
+                and self.velocity == other.velocity
+            )
         else:
             return False
 
 
 def read_data(file):
     """Read input into list of Moon instances"""
+
     def get_moon(l):
-        x, _, l = l.partition('=')[2].partition(',')
-        y, _, l = l.partition('=')[2].partition(',')
-        z = l.partition('=')[2].partition('>')[0]
+        x, _, l = l.partition("=")[2].partition(",")
+        y, _, l = l.partition("=")[2].partition(",")
+        z = l.partition("=")[2].partition(">")[0]
         return Moon(names.pop(), [int(x), int(y), int(z)])
 
     data = []
-    names = ['Io', 'Europa', 'Ganymede', 'Callisto']
+    names = ["Io", "Europa", "Ganymede", "Callisto"]
     with open(file) as f:
         for line in f:
             data.append(get_moon(line))
@@ -97,9 +99,9 @@ def no_dump(number, moons):
     del number, moons
 
 
-def simulate(moons, rounds = 1000, debug = no_dump):
+def simulate(moons, rounds=1000, debug=no_dump):
     debug(0, moons)
-    for i in range(1, rounds+1):
+    for i in range(1, rounds + 1):
         for m in moons:
             for n in moons:
                 if n.id != m.id:
@@ -117,7 +119,7 @@ def total_energy(moons):
     return energy
 
 
-def naive_search(moons, debug = no_dump):
+def naive_search(moons, debug=no_dump):
     """Search cycle just by iterating until found"""
     debug(0, moons)
     step = 0
@@ -135,7 +137,7 @@ def naive_search(moons, debug = no_dump):
             return step
 
 
-def cycle_search(moons, debug = no_dump):
+def cycle_search(moons, debug=no_dump):
     """Search cycle for each axis separately"""
     # This solution was inspired by the reddit thread
     # https://www.reddit.com/r/adventofcode/comments/e9j0ve/2019_day_12_solutions/

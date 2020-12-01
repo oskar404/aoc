@@ -6,7 +6,7 @@ import intcode
 
 def read_data(file):
     with open(file) as f:
-        return [int(i) for i in f.read().split(',')]
+        return [int(i) for i in f.read().split(",")]
 
 
 assert len(sys.argv) == 2, "Missing input"

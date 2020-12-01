@@ -7,23 +7,18 @@ def read_data(file):
     data = []
     with open(file) as f:
         for line in f:
-            data.append(line.strip().split(','))
+            data.append(line.strip().split(","))
     return data
 
 
-directions = {
-    'U': 0+1j,
-    'D': 0-1j,
-    'R': 1+0j,
-    'L': -1+0j
-}
+directions = {"U": 0 + 1j, "D": 0 - 1j, "R": 1 + 0j, "L": -1 + 0j}
 
 
 def plot_path(wire):
     """Plot path into dict, where key is position and value is travel length"""
-    prev = 0+0j
+    prev = 0 + 0j
     dist = 0
-    path = { prev: dist }
+    path = {prev: dist}
     for point in wire:
         dir = directions[point[0]]
         steps = int(point[1:])

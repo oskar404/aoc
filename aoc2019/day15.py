@@ -7,7 +7,7 @@ from intcode import IntCodeState
 
 def read_data(file):
     with open(file) as f:
-        return [int(i) for i in f.read().split(',')]
+        return [int(i) for i in f.read().split(",")]
 
 
 class DroidBrain:
@@ -25,21 +25,21 @@ class DroidBrain:
     """
 
     tile = {
-        0: '#',
-        1: '.',
-        2: 'O',
+        0: "#",
+        1: ".",
+        2: "O",
     }
 
     def __init__(self):
-        self._screen = [[]]*50  # Screen array of arrays
+        self._screen = [[]] * 50  # Screen array of arrays
         for i in range(len(self._screen)):
-            self._screen[i] = [' '] * 50
+            self._screen[i] = [" "] * 50
         self._px = 25
         self._py = 25
         print(len(self._screen))
         self._screen[self._py][self._px] = self.tile[1]
         self._previous = 1  # Current position is empty
-        self._input = [1]   # Start with north
+        self._input = [1]  # Start with north
         self._running = True
 
     @property
@@ -51,9 +51,9 @@ class DroidBrain:
         # handle negative indexes
         tile = self.tile[value]
         if y >= len(self._screen):
-            self._screen += [[' ']] * ((y+1) - len(self._screen))
+            self._screen += [[" "]] * ((y + 1) - len(self._screen))
         if x >= len(self._screen[y]):
-            self._screen[y] += [' '] * ((x+1) - len(self._screen[y]))
+            self._screen[y] += [" "] * ((x + 1) - len(self._screen[y]))
         self._screen[y][x] = tile
 
     def read_in(self):
@@ -62,7 +62,7 @@ class DroidBrain:
         if self._previous == 1:  # continue same direction
             self._input.append(self._input[-1])
         else:
-            move = self._input[-1]+1 if self._input[-1]+1 <= 4 else 1
+            move = self._input[-1] + 1 if self._input[-1] + 1 <= 4 else 1
             self._input.append(move)
         print(self._input[-1])
         return self._input[-1]
@@ -121,7 +121,7 @@ def render(screen):
     s = screen[:]
     s.reverse()
     for r in s:
-        print(''.join(r))
+        print("".join(r))
 
 
 def find_oxygen_system(data):

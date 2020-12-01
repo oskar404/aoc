@@ -27,17 +27,17 @@ class Point(object):
         return abs(self.Y - p.Y)
 
     def __repr__(self):
-        return 'P({},{})[{},{}]'.format(self.X, self.Y, self.vx, self.vy)
+        return "P({},{})[{},{}]".format(self.X, self.Y, self.vx, self.vy)
 
     def __str__(self):
-        return 'P({},{})[{},{}]'.format(self.X, self.Y, self.vx, self.vy)
+        return "P({},{})[{},{}]".format(self.X, self.Y, self.vx, self.vy)
 
 
 def get_input():
     def to_list(line):
-        replaced = ['position=<', '> velocity=<', '>', ',']
+        replaced = ["position=<", "> velocity=<", ">", ","]
         for r in replaced:
-            line = line.replace(r, ' ')
+            line = line.replace(r, " ")
         return [int(x) for x in line.split()]
 
     assert len(sys.argv) == 2, "Missing input"
@@ -55,21 +55,22 @@ def dump(data, tag, pic=True):
     max_y = max([p.Y for p in data]) + 1
     sizex = max_x - min_x
     sizey = max_y - min_y
-    print('round: {} [{}x{}]'.format(tag, sizex, sizey))
+    print("round: {} [{}x{}]".format(tag, sizex, sizey))
     if not pic:
         return
-    canvas = [' '] * sizex * sizey
+    canvas = [" "] * sizex * sizey
     for p in data:
         xp = p.X - min_x
         yp = p.Y - min_y
-        canvas[xp + sizex*yp] = '*'
+        canvas[xp + sizex * yp] = "*"
     for y in range(sizey):
-        print(''.join(canvas[y*sizex:(y+1)*sizex]))
+        print("".join(canvas[y * sizex : (y + 1) * sizex]))
 
 
 def solve_part1(input):
     def distance(data):
         return sum([p.xdist(q) for p in data for q in data])
+
     def move(data, steps=1):
         return [p.move(steps) for p in data]
 
@@ -78,7 +79,7 @@ def solve_part1(input):
     # This is too simple brute force algorithm. It works but takes a long time
     # Better way would be to calculate intersections of the lines before trying
     # to find the minimum
-    night = 60 * 60 * 12 # Seconds in night?
+    night = 60 * 60 * 12  # Seconds in night?
     candidate = (0, distance(data))
     for n in range(1, night):
         data = move(data)
@@ -86,10 +87,9 @@ def solve_part1(input):
         if current[1] < candidate[1]:
             candidate = current
     data = move(deepcopy(input), candidate[0])
-    dump(data, 'n:{} d:{}'.format(candidate[0], candidate[1]))
+    dump(data, "n:{} d:{}".format(candidate[0], candidate[1]))
     return candidate
 
 
 input = get_input()
-print('Part1: (n:{})'.format(solve_part1(input)))
-
+print("Part1: (n:{})".format(solve_part1(input)))

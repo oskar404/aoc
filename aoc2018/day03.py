@@ -8,7 +8,9 @@ def get_input():
     """Parse file with lines: '#<id> @ <x>,<y>: <width>x<height>'"""
     assert len(sys.argv) == 2, "Missing input"
     input = []
-    template = '#(?P<id>\d+?) @ (?P<x>\d+?),(?P<y>\d+?): (?P<width>\d+?)x(?P<height>\d+)'
+    template = (
+        "#(?P<id>\d+?) @ (?P<x>\d+?),(?P<y>\d+?): (?P<width>\d+?)x(?P<height>\d+)"
+    )
     p = re.compile(template)
     with open(sys.argv[1]) as f:
         for line in f:
@@ -20,10 +22,10 @@ def get_input():
 def solve_part1(input):
     xsize = 1000
     ysize = 1000
-    fabric = [[0]*xsize for i in range(ysize)]
+    fabric = [[0] * xsize for i in range(ysize)]
     for claim in input:
-        for x in range(claim['x'], claim['x'] + claim['width']):
-            for y in range(claim['y'], claim['y'] + claim['height']):
+        for x in range(claim["x"], claim["x"] + claim["width"]):
+            for y in range(claim["y"], claim["y"] + claim["height"]):
                 fabric[x][y] += 1
     overlapping = 0
     for x in range(xsize):
@@ -35,18 +37,18 @@ def solve_part1(input):
 def solve_part2(input):
     xsize = 1000
     ysize = 1000
-    fabric = [[0]*xsize for i in range(ysize)]
-    claim_list = dict([claim['id'], True] for claim in input)
+    fabric = [[0] * xsize for i in range(ysize)]
+    claim_list = dict([claim["id"], True] for claim in input)
     for claim in input:
-        for x in range(claim['x'], claim['x'] + claim['width']):
-            for y in range(claim['y'], claim['y'] + claim['height']):
+        for x in range(claim["x"], claim["x"] + claim["width"]):
+            for y in range(claim["y"], claim["y"] + claim["height"]):
                 if fabric[x][y] > 0:
                     claim_list[fabric[x][y]] = False
-                    claim_list[claim['id']] = False
-                fabric[x][y] = claim['id']
+                    claim_list[claim["id"]] = False
+                fabric[x][y] = claim["id"]
     return [id for id, valid in claim_list.items() if valid]
 
 
 input = get_input()
-print('Overlapping: {}'.format(solve_part1(input)))
-print('Clean claim: {}'.format(solve_part2(input)))
+print("Overlapping: {}".format(solve_part1(input)))
+print("Clean claim: {}".format(solve_part2(input)))

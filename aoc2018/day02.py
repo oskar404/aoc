@@ -14,6 +14,7 @@ def get_input():
 
 def fingerprint(id):
     """Fingerprint based two and three of a kind in string. Return tuple(int, int)"""
+
     def test(count):
         return 1 if len([c for c in codes.values() if c is count]) > 0 else 0
 
@@ -42,7 +43,7 @@ def same_chars(id1, id2):
     result = []
     for i in [el1 for el1, el2 in zip(id1, id2) if el1 == el2]:
         result.append(i)
-    return ''.join(result)
+    return "".join(result)
 
 
 def solve_part1(input):
@@ -64,5 +65,5 @@ def solve_part2(input):
 
 
 input = get_input()
-print('Checksum: {}'.format(solve_part1(input)))
-print('Similar codes: {}'.format(solve_part2(input)))
+print("Checksum: {}".format(solve_part1(input)))
+print("Similar codes: {}".format(solve_part2(input)))

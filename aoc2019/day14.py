@@ -12,11 +12,11 @@ def parse_data(input):
 
     data = {}
     for line in input.splitlines():
-        formula, _, result = line.partition('=>')
+        formula, _, result = line.partition("=>")
         if result:  # Ignore empty lines
             quantity, chemical = _parse(result)
             assert chemical not in data, f"Chemical '{chemical}' defined twice"
-            reaction =  list(map(_parse, [c for c in formula.strip().split(',')]))
+            reaction = list(map(_parse, [c for c in formula.strip().split(",")]))
             data[chemical] = (quantity, reaction)
     return data
 
@@ -28,10 +28,11 @@ def read_data(file):
 
 class NanoFactory:
     """Logic for FUEL production"""
+
     def __init__(self, rules):
         self.rules = rules  # Production rules
-        self.storage = {}   # Produced materials
-        self.ore = 0        # Number of used ORE
+        self.storage = {}  # Produced materials
+        self.ore = 0  # Number of used ORE
 
     def reset(self):
         """Make testing easier"""
@@ -41,7 +42,7 @@ class NanoFactory:
     def _get_chemical(self, units, name):
         """Get x units of named chemical component"""
         if units > self.storage.get(name, 0):
-            self.produce_chemical(name, units-self.storage.get(name, 0))
+            self.produce_chemical(name, units - self.storage.get(name, 0))
         self.storage[name] -= units
 
     def produce_chemical(self, name, units=1):
@@ -49,15 +50,15 @@ class NanoFactory:
         quantity, formula = self.rules[name]
         m = math.ceil(units / quantity)
         for q, c in formula:
-            if c == 'ORE':
+            if c == "ORE":
                 self.ore += q * m
             else:
-                self._get_chemical(q*m, c)
+                self._get_chemical(q * m, c)
         self.storage[name] = self.storage.get(name, 0) + quantity * m
 
     def run(self):
         """Run FUEL production for one cell. Return used ORE count"""
-        self.produce_chemical('FUEL')
+        self.produce_chemical("FUEL")
         return self.ore
 
     def run_production(self, reserve=1000000000000):
@@ -69,7 +70,7 @@ class NanoFactory:
         fuel_max = 100000000
         while (fuel_max - fuel_min) > 1:
             units = (fuel_min + fuel_max) // 2
-            self.produce_chemical('FUEL', units)
+            self.produce_chemical("FUEL", units)
             if self.ore <= reserve:
                 fuel_min = units
             else:

@@ -43,7 +43,7 @@ class IntCodeIO:
     def read_in(self):
         """Read next int from input queue"""
         self._idx += 1
-        return self.stdin[self._idx-1]
+        return self.stdin[self._idx - 1]
 
     def has_in(self):
         """Return true if input queue has data"""
@@ -60,7 +60,7 @@ class IntCodeIO:
     def next_out(self):
         """Return next item from output queue"""
         self._odx += 1
-        return self.stdout[self._odx-1]
+        return self.stdout[self._odx - 1]
 
     def __str__(self):
         return f"stdin:{self.stdin} [{self._idx}] stdout:{self.stdout} [{self._odx}]"
@@ -77,9 +77,9 @@ class IntCodeState:
     def __init__(self, data):
         """Load program into this state"""
         self.prog = data.copy()  # Processor byte code
-        self._idx = 0            # Current instruction
-        self._halt = False       # Processor in halt state
-        self._base = 0           # Relative base
+        self._idx = 0  # Current instruction
+        self._halt = False  # Processor in halt state
+        self._base = 0  # Relative base
 
     @property
     def idx(self):
@@ -126,26 +126,26 @@ class IntCodeState:
         """Return opcode and modes from current position"""
         code = self.read(self.idx)
         opcode = code % 100
-        modes = [int(code/100)%10, int(code/1000)%10, int(code/10000)%10]
+        modes = [int(code / 100) % 10, int(code / 1000) % 10, int(code / 10000) % 10]
         return opcode, modes
 
     def addr(self, offset, mode):
         """Resolve memory address"""
         value = self.read(self._idx + offset)
-        if mode == 0:       # position mode
+        if mode == 0:  # position mode
             return value
-        elif mode == 2:     # relative mode
+        elif mode == 2:  # relative mode
             return self._base + value
         assert False, f"Invalid addr(offset={offset}, mode={mode})"
 
     def parm(self, offset, mode):
         """Read parameter based on mode"""
         value = self.read(self._idx + offset)
-        if mode == 0:       # position mode
+        if mode == 0:  # position mode
             return self.read(value)
-        elif mode == 1:     # immediate mode
+        elif mode == 1:  # immediate mode
             return value
-        elif mode == 2:     # relative mode
+        elif mode == 2:  # relative mode
             return self.read(self._base + value)
         assert False, f"Invalid parm(offset={offset}, mode={mode})"
 
@@ -165,7 +165,7 @@ def cmd_debugger(state, cmd, modes, args, result):
     ptr = state.idx
     for i in range(args):
         arglist.append(state.read(ptr + i + 1))
-    res = state.read(ptr + args + 1) if result else '<undef>'
+    res = state.read(ptr + args + 1) if result else "<undef>"
     print(f"{cmd}({arglist} m:{modes}) -> {res} [idx:{state.idx},base:{state.base}]")
 
 
@@ -174,7 +174,7 @@ def run(state, io, debug=null_debugger):
 
     def add(modes):
         """Addition operator: 01, arg, arg, result"""
-        debug(state, 'add', modes, 2, True)
+        debug(state, "add", modes, 2, True)
         value = state.parm(1, modes[0]) + state.parm(2, modes[1])
         state.writ(value, state.addr(3, modes[2]))
         state.next(4)
@@ -182,7 +182,7 @@ def run(state, io, debug=null_debugger):
 
     def multiply(modes):
         """Multiplication operator: 02, arg, arg, result*"""
-        debug(state, 'multiply', modes, 2, True)
+        debug(state, "multiply", modes, 2, True)
         value = state.parm(1, modes[0]) * state.parm(2, modes[1])
         state.writ(value, state.addr(3, modes[2]))
         state.next(4)
@@ -190,7 +190,7 @@ def run(state, io, debug=null_debugger):
 
     def read_input(modes):
         """Take input operator: 03, arg <- read input to arg"""
-        debug(state, 'read_input', modes, 0, True)
+        debug(state, "read_input", modes, 0, True)
         if io.has_in():
             state.writ(io.read_in(), state.addr(1, modes[0]))
             state.next(2)
@@ -199,14 +199,14 @@ def run(state, io, debug=null_debugger):
 
     def write_output(modes):
         """Output operator: 04, arg -> write arg to output output"""
-        debug(state, 'write_output', modes, 1, False)
+        debug(state, "write_output", modes, 1, False)
         io.write_out(state.parm(1, modes[0]))
         state.next(2)
         return True
 
     def jmp_if_true(modes):
         """Jump-if-true operator: 05, arg, result"""
-        debug(state, 'jmp_if_true', modes, 1, True)
+        debug(state, "jmp_if_true", modes, 1, True)
         if state.parm(1, modes[0]) != 0:
             state.jump(state.parm(2, modes[1]))
         else:
@@ -215,7 +215,7 @@ def run(state, io, debug=null_debugger):
 
     def jmp_if_false(modes):
         """Jump-if-false operator: 06, arg, result"""
-        debug(state, 'jmp_if_false', modes, 1, True)
+        debug(state, "jmp_if_false", modes, 1, True)
         if state.parm(1, modes[0]) == 0:
             state.jump(state.parm(2, modes[1]))
         else:
@@ -224,7 +224,7 @@ def run(state, io, debug=null_debugger):
 
     def less_than(modes):
         """Less-than operator: 07, arg, arg, result"""
-        debug(state, 'less_than', modes, 2, True)
+        debug(state, "less_than", modes, 2, True)
         addr = state.addr(3, modes[2])
         if state.parm(1, modes[0]) < state.parm(2, modes[1]):
             state.writ(1, addr)
@@ -235,7 +235,7 @@ def run(state, io, debug=null_debugger):
 
     def equals(modes):
         """Less-than operator: 08, arg, arg, result"""
-        debug(state, 'equals', modes, 2, True)
+        debug(state, "equals", modes, 2, True)
         addr = state.addr(3, modes[2])
         if state.parm(1, modes[0]) == state.parm(2, modes[1]):
             state.writ(1, addr)
@@ -246,14 +246,14 @@ def run(state, io, debug=null_debugger):
 
     def set_relative_base(modes):
         """Set relative base operator: 09, arg -> change relative base"""
-        debug(state, 'relative_base', modes, 1, False)
+        debug(state, "relative_base", modes, 1, False)
         state.rbse(state.parm(1, modes[0]))
         state.next(2)
         return True
 
     def halt(modes):
         """Halt operator: 99"""
-        debug(state, 'halt', modes, 0, False)
+        debug(state, "halt", modes, 0, False)
         state.hlcf()
         return False
 
@@ -268,7 +268,7 @@ def run(state, io, debug=null_debugger):
         7: less_than,
         8: equals,
         9: set_relative_base,
-        99: halt
+        99: halt,
     }
 
     assert not state.halt

@@ -9,17 +9,16 @@ def get_input():
     id = 1
     with open(sys.argv[1]) as f:
         for line in f:
-            x,y = line.split(',')
+            x, y = line.split(",")
             input[id] = (int(x.strip()), int(y.strip()))
             id += 1
     return input
 
 
 class Map(object):
-
     def generate(data):
-        x_values = [p[0] for _,p in data.items()]
-        y_values = [p[1] for _,p in data.items()]
+        x_values = [p[0] for _, p in data.items()]
+        y_values = [p[1] for _, p in data.items()]
         lower = (min(x_values), min(y_values))
         upper = (max(x_values), max(y_values))
         return Map(lower, upper)
@@ -36,21 +35,21 @@ class Map(object):
         assert y >= self.lower[1] and y <= self.upper[1]
         xp = x - self.lower[0]
         yp = y - self.lower[1]
-        return self.area[xp + self.width*yp]
+        return self.area[xp + self.width * yp]
 
     def set(self, x, y, value):
         assert x >= self.lower[0] and x <= self.upper[0]
         assert y >= self.lower[1] and y <= self.upper[1]
         xp = x - self.lower[0]
         yp = y - self.lower[1]
-        self.area[xp + self.width*yp] = value
+        self.area[xp + self.width * yp] = value
 
     def dump(self):
         for y in range(self.height):
             row = [self.area[x + self.width * y] for x in range(self.width)]
-            row_str = ''
+            row_str = ""
             for x in row:
-                row_str += '{0: >2}'.format(x if x > 0 else '--')
+                row_str += "{0: >2}".format(x if x > 0 else "--")
             print(row_str)
 
 
@@ -59,11 +58,11 @@ def solve_part1(input):
     m = Map.generate(data)
 
     # Calculate owners of coordinates
-    for x in range(m.lower[0],m.upper[0]+1):
-        for y in range(m.lower[1],m.upper[1]+1):
+    for x in range(m.lower[0], m.upper[0] + 1):
+        for y in range(m.lower[1], m.upper[1] + 1):
             near = []
             distance = m.upper[0] + m.upper[1]
-            for id,p in data.items():
+            for id, p in data.items():
                 d = abs(p[0] - x) + abs(p[1] - y)
                 if d < distance:
                     distance = d
@@ -75,10 +74,10 @@ def solve_part1(input):
                 m.set(x, y, near[0])
 
     # Remove coordinates with infinite areas
-    for x in range(m.lower[0],m.upper[0]+1):
+    for x in range(m.lower[0], m.upper[0] + 1):
         data.pop(m.get(x, m.lower[1]), None)
         data.pop(m.get(x, m.upper[1]), None)
-    for y in range(m.lower[1],m.upper[1]+1):
+    for y in range(m.lower[1], m.upper[1] + 1):
         data.pop(m.get(m.lower[0], y), None)
         data.pop(m.get(m.upper[0], y), None)
 
@@ -99,10 +98,10 @@ def solve_part2(input, max_dist):
     m = Map.generate(data)
 
     # Calculate distances
-    for x in range(m.lower[0],m.upper[0]+1):
-        for y in range(m.lower[1],m.upper[1]+1):
+    for x in range(m.lower[0], m.upper[0] + 1):
+        for y in range(m.lower[1], m.upper[1] + 1):
             distance = 0
-            for _,p in data.items():
+            for _, p in data.items():
                 distance += abs(p[0] - x) + abs(p[1] - y)
             m.set(x, y, distance)
 
@@ -110,5 +109,5 @@ def solve_part2(input, max_dist):
 
 
 input = get_input()
-print('Part1: area {} (coordinates: {})'.format(*solve_part1(input)))
-print('Part2: area {}'.format(solve_part2(input, 10000)))
+print("Part1: area {} (coordinates: {})".format(*solve_part1(input)))
+print("Part2: area {}".format(solve_part2(input, 10000)))

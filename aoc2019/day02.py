@@ -6,7 +6,7 @@ import intcode
 
 def read_data(file):
     with open(file) as f:
-        return [int(i) for i in f.read().split(',')]
+        return [int(i) for i in f.read().split(",")]
 
 
 def restore_gravity_assist(data):

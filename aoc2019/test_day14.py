@@ -79,21 +79,21 @@ def test_basic_factory():
     assert len(data) == 6
     factory = NanoFactory(data)
 
-    factory.produce_chemical('A')
+    factory.produce_chemical("A")
     assert factory.ore == 10
-    assert factory.storage['A'] == 10
+    assert factory.storage["A"] == 10
     factory.reset()
-    assert 'A' not in factory.storage
+    assert "A" not in factory.storage
 
-    factory.produce_chemical('B')
+    factory.produce_chemical("B")
     assert factory.ore == 1
-    assert factory.storage['B'] == 1
+    assert factory.storage["B"] == 1
     factory.reset()
 
-    factory.produce_chemical('C')
-    assert factory.storage['A'] == 3
-    assert factory.storage['B'] == 0
-    assert factory.storage['C'] == 1
+    factory.produce_chemical("C")
+    assert factory.storage["A"] == 3
+    assert factory.storage["B"] == 0
+    assert factory.storage["C"] == 1
     assert factory.ore == 11
     factory.reset()
 
@@ -113,10 +113,11 @@ def test_with_examples():
 
 def test_max_production():
     """
-        data3 -> The 13312 ORE-per-FUEL example could produce 82892753 FUEL.
-        data4 -> The 180697 ORE-per-FUEL example could produce 5586022 FUEL.
-        data5 -> The 2210736 ORE-per-FUEL example could produce 460664 FUEL.
+    data3 -> The 13312 ORE-per-FUEL example could produce 82892753 FUEL.
+    data4 -> The 180697 ORE-per-FUEL example could produce 5586022 FUEL.
+    data5 -> The 2210736 ORE-per-FUEL example could produce 460664 FUEL.
     """
+
     def run_factory(input):
         data = parse_data(input)
         factory = NanoFactory(data)

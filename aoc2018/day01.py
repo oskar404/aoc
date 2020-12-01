@@ -25,6 +25,7 @@ def solve_part2(file):
             freqs.add(sum)
             sum += item
 
+
 assert len(sys.argv) == 2, "Missing input"
-print('Frequency: {}'.format(solve_part1(sys.argv[1])))
-print('Calibration ferquency: {}'.format(solve_part2(sys.argv[1])))
+print("Frequency: {}".format(solve_part1(sys.argv[1])))
+print("Calibration ferquency: {}".format(solve_part2(sys.argv[1])))

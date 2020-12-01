@@ -67,14 +67,14 @@ def self_test():
     assert validator1(122459)
     assert not validator1(223450)  # Decreasing
     assert not validator1(123789)  # No double
-    assert not validator1(12237)   # Too short, not six digit
+    assert not validator1(12237)  # Too short, not six digit
     assert not validator1(-11456)  # Negative integer
     # Test validator2()
     assert validator2(111111)
     assert validator2(122459)
     assert not validator2(223450)  # Decreasing
     assert not validator2(123789)  # No double
-    assert not validator2(12237)   # Too short, not six digit
+    assert not validator2(12237)  # Too short, not six digit
     assert not validator2(-11456)  # Negative integer
     assert validator2(112233)
     assert not validator2(123444)  # Part of large group

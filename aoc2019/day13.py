@@ -7,7 +7,7 @@ from intcode import IntCodeState
 
 def read_data(file):
     with open(file) as f:
-        return [int(i) for i in f.read().split(',')]
+        return [int(i) for i in f.read().split(",")]
 
 
 class ArcadeIO:
@@ -24,16 +24,10 @@ class ArcadeIO:
     - 4 is a ball tile. The ball moves diagonally and bounces off objects.
     """
 
-    tile = {
-        0: ' ',
-        1: 'X',
-        2: 'B',
-        3: '_',
-        4: 'o'
-    }
+    tile = {0: " ", 1: "X", 2: "B", 3: "_", 4: "o"}
 
     def __init__(self):
-        self._screen = [[' ']]   # Screen array of arrays
+        self._screen = [[" "]]  # Screen array of arrays
         self._px = None
         self._py = None
         self._input = []
@@ -52,9 +46,9 @@ class ArcadeIO:
     def _draw(self, x, y, tile):
         """Draw tile to screen and enlarge it if needed"""
         if y >= len(self._screen):
-            self._screen += [[' ']] * ((y+1) - len(self._screen))
+            self._screen += [[" "]] * ((y + 1) - len(self._screen))
         if x >= len(self._screen[y]):
-            self._screen[y] += [' '] * ((x+1) - len(self._screen[y]))
+            self._screen[y] += [" "] * ((x + 1) - len(self._screen[y]))
         self._screen[y][x] = tile
 
     def read_in(self):
@@ -103,7 +97,7 @@ class ArcadeIO:
 def render(screen):
     """Print the screen"""
     for r in screen:
-        print(''.join(r))
+        print("".join(r))
 
 
 def play_game(data, coins=None):
@@ -116,7 +110,7 @@ def play_game(data, coins=None):
     render(io.screen)
     blocks = 0
     for x in range(len(io.screen)):
-        blocks += sum([1 if p == 'B' else 0 for p in io.screen[x]])
+        blocks += sum([1 if p == "B" else 0 for p in io.screen[x]])
     return blocks, io.score
 
 
