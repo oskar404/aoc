@@ -24,5 +24,62 @@ def test_solution1():
     assert result == 2
 
 
+test_data = [
+    ("byr", "2002", True),
+    ("byr", "2003", False),
+    ("hgt", "60in", True),
+    ("hgt", "190cm", True),
+    ("hgt", "190in", False),
+    ("hgt", "190", False),
+    ("hcl", "#123abc", True),
+    ("hcl", "#123abz", False),
+    ("hcl", "123abc", False),
+    ("ecl", "brn", True),
+    ("ecl", "wat", False),
+    ("pid", "000000001", True),
+    ("pid", "0123456789", False),
+]
+
+
+def test_validators():
+    for k, v, r in test_data:
+        assert day04.validator[k](v) == r
+
+
+invalid_batch = """
+eyr:1972 cid:100
+hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926
+
+iyr:2019
+hcl:#602927 eyr:1967 hgt:170cm
+ecl:grn pid:012533040 byr:1946
+
+hcl:dab227 iyr:2012
+ecl:brn hgt:182cm pid:021572410 eyr:2020 byr:1992 cid:277
+
+hgt:59cm ecl:zzz
+eyr:2038 hcl:74454a iyr:2023
+pid:3556412378 byr:2007
+"""
+
+
+valid_batch = """
+pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980
+hcl:#623a2f
+
+eyr:2029 ecl:blu cid:129 byr:1989
+iyr:2014 pid:896056539 hcl:#a97842 hgt:165cm
+
+hcl:#888785
+hgt:164cm byr:2001 iyr:2015 cid:88
+pid:545766238 ecl:hzl
+eyr:2022
+
+iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719
+"""
+
+
 def test_solution2():
-    pass
+    assert day04.solve_part2(batch) == 2
+    assert day04.solve_part2(invalid_batch) == 0
+    assert day04.solve_part2(valid_batch) == 4
