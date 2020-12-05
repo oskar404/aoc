@@ -30,7 +30,12 @@ def solve_part1(input):
 
 
 def solve_part2(input):
-    pass
+    _, seat_ids = solve_part1(input)
+    seat_ids = sorted(seat_ids)
+    for i in range(len(seat_ids)):
+        if seat_ids[i]+1 != seat_ids[i+1]:
+            return seat_ids[i]+1
+    assert False
 
 
 def read_data(file):
@@ -41,7 +46,8 @@ def read_data(file):
 def main():
     assert len(sys.argv) == 2, "Missing input"
     data = read_data(sys.argv[1])
-    print(f"Part 1: valid passports {solve_part1(data)[0]}")
+    print(f"Part 1: max seat id {solve_part1(data)[0]}")
+    print(f"Part 1: my seat id {solve_part2(data)}")
 
 
 if __name__ == "__main__":
