@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 
-import re
 import sys
 
 
 def solve_part1(input):
-
     def calculte_row(record):
-        multipliers = [0b1000000, 0b0100000, 0b0010000, 0b0001000, 0b0000100, 0b0000010, 0b0000001]
+        multipliers = [
+            0b1000000,
+            0b0100000,
+            0b0010000,
+            0b0001000,
+            0b0000100,
+            0b0000010,
+            0b0000001,
+        ]
         row = 0
         for i in range(7):
             flag = 1 if record[i] == "B" else 0
@@ -33,8 +39,8 @@ def solve_part2(input):
     _, seat_ids = solve_part1(input)
     seat_ids = sorted(seat_ids)
     for i in range(len(seat_ids)):
-        if seat_ids[i]+1 != seat_ids[i+1]:
-            return seat_ids[i]+1
+        if seat_ids[i] + 1 != seat_ids[i + 1]:
+            return seat_ids[i] + 1
     assert False
 
 
