@@ -14,7 +14,6 @@ Validation of password data. The fields are:
     cid (Country ID) - ignored, missing or not.
 """
 
-from day02 import OldPasswdRule
 import re
 import sys
 
