@@ -53,7 +53,7 @@ def main():
     assert len(sys.argv) == 2, "Missing input"
     data = read_data(sys.argv[1])
     print(f"Part 1: max seat id {solve_part1(data)[0]}")
-    print(f"Part 1: my seat id {solve_part2(data)}")
+    print(f"Part 2: my seat id {solve_part2(data)}")
 
 
 if __name__ == "__main__":
