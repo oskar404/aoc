@@ -34,4 +34,5 @@ def test_solution1():
 
 
 def test_solution2():
-    pass
+    assert day06.solve_part2(sample1) == 3
+    assert day06.solve_part2(sample2) == 6
