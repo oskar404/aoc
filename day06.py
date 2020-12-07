@@ -4,7 +4,6 @@ import sys
 
 
 def solve_part1(input):
-
     def parse(input):
         batch = []
         record = set()
@@ -25,7 +24,6 @@ def solve_part1(input):
 
 
 def solve_part2(input):
-
     def parse(input):
         batch = []
         record = []
