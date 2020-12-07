@@ -2,7 +2,7 @@ import pytest
 import day07
 
 
-data = """
+data1 = """
 light red bags contain 1 bright white bag, 2 muted yellow bags.
 dark orange bags contain 3 bright white bags, 4 muted yellow bags.
 bright white bags contain 1 shiny gold bag.
@@ -14,10 +14,21 @@ faded blue bags contain no other bags.
 dotted black bags contain no other bags.
 """
 
+data2 = """
+shiny gold bags contain 2 dark red bags.
+dark red bags contain 2 dark orange bags.
+dark orange bags contain 2 dark yellow bags.
+dark yellow bags contain 2 dark green bags.
+dark green bags contain 2 dark blue bags.
+dark blue bags contain 2 dark violet bags.
+dark violet bags contain no other bags.
+"""
+
 
 def test_solution1():
-    assert day07.solve_part1(data) == 4
+    assert day07.solve_part1(data1) == 4
 
 
 def test_solution2():
-    pass
+    assert day07.solve_part2(data1) == 32
+    assert day07.solve_part2(data2) == 126

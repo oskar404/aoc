@@ -61,7 +61,15 @@ def solve_part1(input):
 
 
 def solve_part2(input):
-    pass
+    def recurse(rules, color):
+        result = 1
+        for c in rules[color]:
+            result += c.multiplier * recurse(rules, c.color)
+        return result
+
+    rules = parse(input)
+    bags = recurse(rules, "shiny gold") - 1  # remove the 'shiny gold'
+    return bags
 
 
 def read_data(file):
@@ -73,6 +81,7 @@ def main():
     assert len(sys.argv) == 2, "Missing input"
     data = read_data(sys.argv[1])
     print(f"Part 1: How many bag colors? -> {solve_part1(data)}")
+    print(f"Part 2: How many extra bags? -> {solve_part2(data)}")
 
 
 if __name__ == "__main__":
