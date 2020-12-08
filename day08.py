@@ -65,7 +65,6 @@ def parse(input):
     """Some nifty regex magic rule would have been cool .."""
     prog = []
     for line in [l.strip() for l in input.splitlines() if l.strip()]:
-        print(f"parse -> {line}")
         op, arg = line.split()
         prog.append(Instruction(op.strip(), arg.strip()))
     return prog
