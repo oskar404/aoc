@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+from copy import deepcopy
 from enum import Enum
 
 
@@ -30,7 +31,7 @@ class Instruction:
     """Instruction -> operation, int arg"""
 
     def __init__(self, op, arg):
-        self.operation = op_mapper[op]
+        self.opcode = op_mapper[op]
         self.argument = int(arg)
         self.exec = False
 
@@ -38,31 +39,36 @@ class Instruction:
         executed = ""
         if self.exec:
             executed = " (exec)"
-        return f"{self.operation}: {self.argument}{executed}"
+        return f"{self.opcode}: {self.argument}{executed}"
 
     def __repr__(self):
         return str(self)
 
     def execute(self):
         self.exec = True
-        return op_exec[self.operation](self.argument)
+        return op_exec[self.opcode](self.argument)
 
 
-def run(prog):
-    """Run program until some operation is run second time"""
+def run(prog, verbose=False):
+    """Run program until succeeds or fails"""
     idx = 0
     acc = 0
-    while not prog[idx].exec:
-        print(f"{idx}: {prog[idx]}")
+    success = False
+    while idx < len(prog):
+        if verbose:
+            print(f"{idx}: {prog[idx]}")
+        if prog[idx].exec:
+            break
         nxt, inc = prog[idx].execute()
         idx += nxt
         acc += inc
-        assert idx < len(prog)
-    return (idx, acc)
+    else:
+        success = True
+    return (idx, acc, success)
 
 
 def parse(input):
-    """Some nifty regex magic rule would have been cool .."""
+    """Parse command input as list of opcode and arg pairs"""
     prog = []
     for line in [l.strip() for l in input.splitlines() if l.strip()]:
         op, arg = line.split()
@@ -72,11 +78,36 @@ def parse(input):
 
 def solve_part1(input):
     prog = parse(input)
-    return run(prog)
+    idx, acc, success = run(prog)
+    assert not success, f"{idx}: {prog[idx]} ({acc}) -> should fail"
+    return (idx, acc)
 
 
 def solve_part2(input):
-    pass
+    def mutate(mdx, prog):
+        p = deepcopy(prog)
+        while True:
+            mdx += 1
+            if p[mdx].opcode == OpCode.NOP:
+                p[mdx].opcode = OpCode.JMP
+                break
+            elif p[mdx].opcode == OpCode.JMP:
+                p[mdx].opcode = OpCode.NOP
+                break
+        else:
+            assert False
+        return (mdx, p)
+
+    prog = parse(input)
+    # Brute force algorithm -> try until fix found
+    mdx = -1
+    idx = 0
+    acc = 0
+    success = False
+    while not success:
+        mdx, mprog = mutate(mdx, prog)
+        idx, acc, success = run(mprog)
+    return (idx, acc, mdx)
 
 
 def read_data(file):
@@ -89,6 +120,8 @@ def main():
     data = read_data(sys.argv[1])
     idx, acc = solve_part1(data)
     print(f"Part 1: (idx: {idx}, acc: {acc})")
+    idx, acc, mdx = solve_part2(data)
+    print(f"Part 2: (idx: {idx}, acc: {acc}) (fix: {mdx})")
 
 
 if __name__ == "__main__":

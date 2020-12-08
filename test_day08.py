@@ -22,4 +22,7 @@ def test_solution1():
 
 
 def test_solution2():
-    pass
+    idx, acc, mdx = day08.solve_part2(prog)
+    assert mdx == 7
+    assert acc == 8
+    assert idx == 9
