@@ -33,4 +33,6 @@ def test_solution1():
 
 
 def test_solution2():
-    pass
+    val, seq = day09.solve_part2(data, 5, True)
+    print(f"sequence: {seq}")
+    assert val == 62
