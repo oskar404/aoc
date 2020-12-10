@@ -57,4 +57,9 @@ def test_solution1():
 
 
 def test_solution2():
-    pass
+    assert day10.permutate(1) == 2
+    assert day10.permutate(2) == 4
+    assert day10.permutate(3) == 7
+    assert day10.permutate(4) == 13
+    assert day10.solve_part2(adapters_1, True) == 8
+    assert day10.solve_part2(adapters_2, True) == 19208
