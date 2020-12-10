@@ -1,6 +1,6 @@
 import pytest
-import intcode
-from intcode import run, IntCodeIO, IntCodeState
+from aoc2019 import intcode
+from aoc2019.intcode import run, IntCodeIO, IntCodeState
 
 
 def run_prog(data, result, halted=True):

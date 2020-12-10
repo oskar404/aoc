@@ -1,5 +1,5 @@
 import pytest
-import day10
+from aoc2019 import day10
 
 
 def test_data1():

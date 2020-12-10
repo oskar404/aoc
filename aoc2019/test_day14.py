@@ -1,5 +1,5 @@
 import pytest
-from day14 import parse_data, NanoFactory
+from aoc2019.day14 import parse_data, NanoFactory
 
 
 data1 = """

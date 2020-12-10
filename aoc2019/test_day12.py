@@ -1,6 +1,6 @@
 import pytest
 import copy
-from day12 import Moon, simulate, total_energy, naive_search, cycle_search, dump
+from aoc2019.day12 import Moon, simulate, total_energy, naive_search, cycle_search, dump
 
 
 def check(a, b):
