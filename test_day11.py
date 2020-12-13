@@ -30,5 +30,40 @@ def test_solution1():
     assert rounds == 5
 
 
+data1 = """
+    .......#.
+    ...#.....
+    .#.......
+    .........
+    ..#L....#
+    ....#....
+    .........
+    #........
+    ...#.....
+"""
+
+data2 = """
+    .............
+    .L.L.#.#.#.#.
+    .............
+"""
+
+data3 = """
+    .##.##.
+    #.#.#.#
+    ##...##
+    ...L...
+    ##...##
+    #.#.#.#
+    .##.##.
+"""
+
+
 def test_solution2():
-    pass
+    assert day11.adjacent(day11.parse(data1), 3, 4) == 8
+    assert day11.adjacent(day11.parse(data2), 1, 1) == 0
+    assert day11.adjacent(day11.parse(data2), 3, 1) == 1
+    assert day11.adjacent(day11.parse(data3), 3, 3) == 0
+    occupied, rounds = day11.solve_part2(layout, True)
+    assert occupied == 26
+    assert rounds == 6
