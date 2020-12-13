@@ -39,7 +39,36 @@ def solve_part1(input, verbose=False):
 
 
 def solve_part2(input, verbose=False):
-    pass
+    waypoint = [10, 1]
+    position = [0, 0]
+
+    for rule in input:
+        cmd = instructions[rule[0]]
+        val = int(rule[1:])
+
+        # move waypoint
+        waypoint[0] += cmd[0] * val
+        waypoint[1] += cmd[1] * val
+
+        # rotate waypoint
+        if cmd[2]:
+            rad = cmd[2] * (val * math.pi) / 180
+            wx = waypoint[0]
+            wy = waypoint[1]
+            waypoint[0] = round(wx * math.cos(rad) - wy * math.sin(rad))
+            waypoint[1] = round(wx * math.sin(rad) + wy * math.cos(rad))
+
+        # move ship
+        if cmd[3]:
+            position[0] += waypoint[0] * val
+            position[1] += waypoint[1] * val
+
+        if verbose:
+            print(f"cmd: {rule} -> {cmd} / {position} (w:{waypoint})")
+
+    distance = round(abs(position[0]) + abs(position[1]))
+
+    return (distance, position)
 
 
 def read_data(file):
@@ -52,6 +81,8 @@ def main():
     data = read_data(sys.argv[1])
     distance, cord = solve_part1(data)
     print(f"Part 1: distance: {distance} (coordinates:{cord})")
+    distance, cord = solve_part2(data)
+    print(f"Part 2: distance: {distance} (coordinates:{cord})")
 
 
 if __name__ == "__main__":
