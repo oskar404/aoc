@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import copy
 import re
 import sys
 from enum import Enum
@@ -84,8 +85,80 @@ def solve_part1(input, verbose=False):
     return error_rate
 
 
-def solve_part2(input, verbose=False):
-    pass
+def parse_ticket(input, verbose=False):
+    """Return dict with field name value pairs"""
+
+    def is_valid(value):
+        for r in rules:
+            if r.match(value):
+                return True
+        return False
+
+    rules, ticket, scanned = parse(input)
+
+    if verbose:
+        print(f"rules: {rules}")
+        print(f"scanned: {scanned}")
+
+    # Remove invalid tickets from references
+    references = []
+    for candidate in scanned:
+        for value in candidate:
+            if not is_valid(value):
+                break
+        else:
+            references.append(candidate)
+
+    if verbose:
+        print(f"references: {references}")
+
+    # Intial map containing all rules for all fields
+    reduced = {}
+    for i in range(len(ticket)):
+        rset = {}
+        for r in rules:
+            rset[r.name] = r
+        reduced[i] = rset
+
+    # Reduce rules candidates based on scanned tickets
+    for ref in references:
+        for i, value in enumerate(ref):
+            rset = {}
+            for rule in reduced[i].values():
+                if rule.match(value):
+                    rset[rule.name] = rule
+            reduced[i] = rset
+
+    # Reduce candidates based on singles
+    done = False
+    while not done:
+        for key, rset in reduced.items():
+            if len(rset) == 1:
+                for name in rset.keys():
+                    for k in [k for k in reduced.keys() if k != key]:
+                        reduced[k].pop(name, None)
+        done = len(ticket) == sum([len(r) for r in reduced.values()])
+
+    if verbose:
+        print(f"reduced: {reduced}")
+
+    # Create result
+    result = {}
+    for i, rules in reduced.items():
+        assert len(rules) == 1
+        for name in rules:
+            result[name] = ticket[i]
+
+    return result
+
+
+def solve_part2(input):
+    ticket = parse_ticket(input)
+    result = 1
+    for k, v in ticket.items():
+        if k.startswith("departure"):
+            result *= v
+    return result
 
 
 def read_data(file):
@@ -97,6 +170,7 @@ def main():
     assert len(sys.argv) == 2, "Missing input"
     data = read_data(sys.argv[1])
     print(f"Part 1: error rate: {solve_part1(data)}")
+    print(f"Part 2: departure check sum: {solve_part2(data)}")
 
 
 if __name__ == "__main__":
