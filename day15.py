@@ -6,7 +6,7 @@ import sys
 puzzle_input = [8, 0, 17, 4, 1, 12]
 
 
-def solve_part1(input, turns=2020, verbose=False):
+def solve_puzzle(input, turns=2020, verbose=False):
     if verbose:
         print(f"input: {input}")
 
@@ -27,12 +27,9 @@ def solve_part1(input, turns=2020, verbose=False):
     return prev
 
 
-def solve_part2(input, verbose=False):
-    pass
-
-
 def main():
-    print(f"Part 1: say 2020th number : {solve_part1(puzzle_input)}")
+    print(f"Part 1: say 2020th number : {solve_puzzle(puzzle_input)}")
+    print(f"Part 2: say 30000000th number : {solve_puzzle(puzzle_input, 30000000)}")
 
 
 if __name__ == "__main__":
