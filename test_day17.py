@@ -14,4 +14,6 @@ def test_solution1():
 
 
 def test_solution2():
+    # disable the test. Takes quite long time
+    # assert day17.solve_part2(input1, True) == 848
     pass
