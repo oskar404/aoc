@@ -2,7 +2,7 @@ import pytest
 import day18
 
 
-test_vectors = [
+test_vectors_1 = [
     ["1 + 2 * 3 + 4 * 5 + 6", 71],
     ["1 + (2 * 3) + (4 * (5 + 6))", 51],
     ["2 * 3 + (4 * 5)", 26],
@@ -13,9 +13,20 @@ test_vectors = [
 
 
 def test_solution1():
-    for t in test_vectors:
+    for t in test_vectors_1:
         assert day18.solve_part1(t[0], True) == t[1]
 
 
+test_vectors_2 = [
+    ["1 + 2 * 3 + 4 * 5 + 6", 231],
+    ["1 + (2 * 3) + (4 * (5 + 6))", 51],
+    ["2 * 3 + (4 * 5)", 46],
+    ["5 + (8 * 3 + 9 + 3 * 4 * 3)", 1445],
+    ["5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))", 669060],
+    ["((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", 23340],
+]
+
+
 def test_solution2():
-    pass
+    for t in test_vectors_2:
+        assert day18.solve_part2(t[0], True) == t[1]
