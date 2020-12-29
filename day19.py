@@ -55,7 +55,7 @@ def create_pattern(rules, root):
         for i in range(len(rule) - 1, -1, -1):
             stack.append(rule[i])
         if "|" in rule:
-            stack.append("(")
+            stack.append("(?:")  # use no capturing version of group
 
     push(rules[root])
     while stack:
@@ -95,7 +95,47 @@ def solve_part1(input, verbose=False):
 
 
 def solve_part2(input, verbose=False):
-    pass
+    """Return tuple with number of matches, match regex and matched rows"""
+    rules, pics = parse(input)
+
+    # augment orignal rules - adds recursion
+
+    # cheat with rule 8 instead of just blindly copying
+    #     rules[8] = [42, "|", 42, 8]
+    # create regex which works
+    rules[8] = ["(?:", 42, ")+"]
+
+    # the following cheat is ugly - original rule is
+    #    rules[11] = [42, 31, "|", 42, 11, 31]
+    # just create enough checks without full recursion
+    rules[11] = ["(?:"]
+    rlimit = 10
+    for i in range(1, rlimit + 1):
+        rules[11] = rules[11] + [42] * i + [31] * i
+        if i != rlimit:
+            rules[11].append("|")
+    rules[11].append(")")
+
+    if verbose:
+        for k, v in rules.items():
+            print(f"rule {k}: {v}")
+
+    pattern = create_pattern(rules, 0)
+
+    if verbose:
+        print(f"pattern: {pattern}")
+
+    result = []
+
+    prog = re.compile(pattern)
+    for p in pics:
+        if prog.fullmatch(p):
+            result.append(p)
+
+    if verbose:
+        print(f"results: {result}")
+
+    return (len(result), pattern, result)
 
 
 def read_data(file):
@@ -106,9 +146,10 @@ def read_data(file):
 def main():
     assert len(sys.argv) == 2, "Missing input"
     data = read_data(sys.argv[1])
-    matches, pattern, _ = solve_part1(data)
+    matches, _, _ = solve_part1(data)
     print(f"Part 1: matches: {matches}")
-    print(f"Part 1: pattern: {pattern}")
+    matches, _, _ = solve_part2(data)
+    print(f"Part 2: matches: {matches}")
 
 
 if __name__ == "__main__":
