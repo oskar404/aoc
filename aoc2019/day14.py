@@ -6,7 +6,7 @@ import sys
 
 def parse_data(input):
     def _parse(chem):
-        """Return tuple of quantity and ID for """
+        """Return tuple of quantity and ID for"""
         c = chem.strip().split()
         return (int(c[0]), c[1])
 
