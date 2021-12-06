@@ -1,5 +1,5 @@
 import pytest
-import day11
+from aoc2020 import day11
 
 
 layout = """

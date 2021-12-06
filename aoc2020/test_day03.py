@@ -1,5 +1,5 @@
 import pytest
-import day03
+from aoc2020 import day03
 
 
 def test_solution1():

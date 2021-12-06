@@ -1,5 +1,5 @@
 import pytest
-import day05
+from aoc2020 import day05
 
 
 data = ["BFFFBBFRRR", "FFFBBBFRRR", "BBFFBBFRLL"]

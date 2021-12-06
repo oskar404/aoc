@@ -1,5 +1,5 @@
 import pytest
-import day08
+from aoc2020 import day08
 
 
 prog = """

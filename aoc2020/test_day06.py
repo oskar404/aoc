@@ -1,5 +1,5 @@
 import pytest
-import day06
+from aoc2020 import day06
 
 
 sample1 = """

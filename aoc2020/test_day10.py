@@ -1,5 +1,5 @@
 import pytest
-import day10
+from aoc2020 import day10
 
 
 adapters_1 = [

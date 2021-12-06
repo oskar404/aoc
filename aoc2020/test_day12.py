@@ -1,5 +1,5 @@
 import pytest
-import day12
+from aoc2020 import day12
 
 
 input = ["F10", "N3", "F7", "R90", "F11"]

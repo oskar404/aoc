@@ -1,5 +1,5 @@
 import pytest
-import day04
+from aoc2020 import day04
 
 
 batch = """

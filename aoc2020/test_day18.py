@@ -1,5 +1,5 @@
 import pytest
-import day18
+from aoc2020 import day18
 
 
 test_vectors_1 = [

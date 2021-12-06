@@ -1,5 +1,5 @@
 import pytest
-import day09
+from aoc2020 import day09
 
 
 data = [
