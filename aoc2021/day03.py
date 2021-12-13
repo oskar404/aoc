@@ -25,7 +25,32 @@ def solve_part1(input):
 
 
 def solve_part2(input):
-    pass
+    """Return oxygen generator rating, CO2 scrubber rating, life support rating"""
+
+    def oxygen_selector(list1, list2):
+        return list1 if len(list1) >= len(list2) else list2
+
+    def co2_selector(list1, list2):
+        return list1 if len(list1) < len(list2) else list2
+
+    def algortihm(data, selector):
+        """Return the rate value as int"""
+        for idx in range(len(data[0])):
+            if len(data) == 1:
+                return int(data[0], base=2)
+            ones = []
+            zeroes = []
+            for v in data:
+                if v[idx] == "1":
+                    ones.append(v)
+                else:
+                    zeroes.append(v)
+            data = selector(ones, zeroes)
+        assert False
+
+    oxygen_rate = algortihm(input, oxygen_selector)
+    co2_rate = algortihm(input, co2_selector)
+    return oxygen_rate, co2_rate, oxygen_rate * co2_rate
 
 
 def read_data(file):
@@ -38,8 +63,10 @@ def main():
     data = read_data(sys.argv[1])
     g, e, p = solve_part1(data)
     print(f"Part 1: gamma: {g} ({bin(g)}), epsilon: {e} ({bin(e)}) power: {p}")
-    unsolved = solve_part2(data)
-    print(f"Part 2: {unsolved}")
+    o, co2, life = solve_part2(data)
+    print(
+        f"Part 2: oxygen: {o} ({bin(o)}), co2: {co2} ({bin(co2)}) life support: {life}"
+    )
 
 
 if __name__ == "__main__":
