@@ -1,0 +1,12 @@
+from operator import length_hint
+
+
+[MASTER]
+persistent=no
+
+[FORMAT]
+max-line-length=90
+
+[MESSAGE CONTROL]
+# R0801(duplicate-code)
+disable=R0801
