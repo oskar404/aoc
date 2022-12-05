@@ -4,9 +4,6 @@ import sys
 
 # One important consideration is food - in particular, the number of Calories
 # each Elf is carrying (your puzzle input)
-#
-# Find the Elf carrying the most Calories. How many total Calories is that
-# Elf carrying?
 
 
 def solve_part1(data):
