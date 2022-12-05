@@ -1,5 +1,7 @@
 # Advent of Code 2021
 
+Star fruit hunt in the jungle .. The Elves have brought you on their annual expedition to the grove where the fruit grows.
+
 Solving the advent calendar: https://adventofcode.com/2022
 
 Let's see how far I get this year ..

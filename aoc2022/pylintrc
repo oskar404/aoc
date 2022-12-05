@@ -1,12 +1,12 @@
-from operator import length_hint
-
-
 [MASTER]
 persistent=no
+jobs=4
 
 [FORMAT]
 max-line-length=90
 
-[MESSAGE CONTROL]
-# R0801(duplicate-code)
-disable=R0801
+[MESSAGES CONTROL]
+# C0114 (missing-module-docstring)
+# C0116 (missing-function-docstring)
+# R0801 (duplicate-code)
+disable=C0114,C0116,R0801
