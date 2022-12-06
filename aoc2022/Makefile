@@ -5,7 +5,7 @@ all: lint test
 lint:
 	black *.py
 	flake8 *.py
-	pylint --rcfile pylintrc *.py
+	pylint *.py
 
 test:
 	pytest
