@@ -8,18 +8,6 @@ import sys
 # range of section IDs.
 
 
-def priority(char):
-    """To help prioritize item rearrangement, every item type can be converted
-    to a priority:
-
-    - Lowercase item types a through z have priorities 1 through 26.
-    - Uppercase item types A through Z have priorities 27 through 52.
-    """
-    if char.isupper():
-        return ord(char) - ord("A") + 27
-    return ord(char) - ord("a") + 1
-
-
 def parse_data(data):
     """However, as some of the Elves compare their section assignments with each
     other, they've noticed that many of the assignments overlap.
