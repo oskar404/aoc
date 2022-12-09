@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import utils
 
 # One important consideration is food - in particular, the number of Calories
 # each Elf is carrying (your puzzle input)
@@ -44,14 +45,9 @@ def solve_part2(data):
     return sum(max_calories)
 
 
-def read_data(file):
-    with open(file, mode="r", encoding="utf-8") as infile:
-        return infile.read()
-
-
 def main():
     assert len(sys.argv) == 2, "Missing input"
-    data = read_data(sys.argv[1])
+    data = utils.read_data(sys.argv[1])
     result = solve_part1(data)
     print(f"Part 1: {result}")
     result = solve_part2(data)

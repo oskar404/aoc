@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import sys
+import utils
 
 
 # You can hear birds chirping and raindrops hitting leaves as the expedition
@@ -137,14 +138,9 @@ def solve_part2(data):
     return result
 
 
-def read_data(file):
-    with open(file, mode="r", encoding="utf-8") as infile:
-        return infile.read()
-
-
 def main():
     assert len(sys.argv) == 2, "Missing input"
-    data = read_data(sys.argv[1])
+    data = utils.read_data(sys.argv[1])
     result = solve_part1(data)
     print(f"Part 1: {result}")
     result = solve_part2(data)

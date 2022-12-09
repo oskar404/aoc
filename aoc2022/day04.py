@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import utils
 
 # Space needs to be cleared before the last supplies can be unloaded from the
 # ships, and so several Elves have been assigned the job of cleaning up sections
@@ -48,14 +49,9 @@ def solve_part2(data):
     return result
 
 
-def read_data(file):
-    with open(file, mode="r", encoding="utf-8") as infile:
-        return infile.read()
-
-
 def main():
     assert len(sys.argv) == 2, "Missing input"
-    data = read_data(sys.argv[1])
+    data = utils.read_data(sys.argv[1])
     result = solve_part1(data)
     print(f"Part 1: {result}")
     result = solve_part2(data)
