@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
-import sys
 import utils
 
 
@@ -139,8 +138,7 @@ def solve_part2(data):
 
 
 def main():
-    assert len(sys.argv) == 2, "Missing input"
-    data = utils.read_data(sys.argv[1])
+    data = utils.read_input(__file__)
     result = solve_part1(data)
     print(f"Part 1: {result}")
     result = solve_part2(data)

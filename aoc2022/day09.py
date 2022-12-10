@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import sys
 import utils
 
 # This rope bridge creaks as you walk along it. You aren't sure how old it is,
@@ -101,8 +100,7 @@ def solve_part2(data):
 
 
 def main():
-    assert len(sys.argv) == 2, "Missing input"
-    data = utils.read_data(sys.argv[1])
+    data = utils.read_input(__file__)
     result = solve_part1(data)
     print(f"Part 1: {result}")
     result = solve_part2(data)
