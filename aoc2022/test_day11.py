@@ -1,5 +1,7 @@
 import pytest  # noqa: F401  # pylint: disable=unused-import
-from day11 import solve_part1
+import utils
+from day11 import solve_part1, solve_part2
+
 
 TEST_DATA = """
 Monkey 0:
@@ -33,9 +35,12 @@ Monkey 3:
 
 
 def test_solution1():
+    utils.VERBOSE = True
     assert solve_part1(TEST_DATA) == 10605
+    utils.VERBOSE = False
 
 
 def test_solution2():
-    # assert solve_part2(TEST_DATA) == 0
-    pass
+    utils.VERBOSE = True
+    assert solve_part2(TEST_DATA) == 2713310158
+    utils.VERBOSE = False

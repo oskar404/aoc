@@ -58,6 +58,8 @@ def parse_operation(spec):
         def __repr__(self):
             return "new = old * old"
 
+    # could use lambda functions to simpliify the implementation
+
     tokens = spec.strip().split()
     if tokens[4] == "+":
         return SumOp(int(tokens[5]))
@@ -85,14 +87,16 @@ class Inspector:
         self.tester = tester
         self.good_monkey = good_monkey
         self.bad_monkey = bad_monkey
+        self.worry = True  # is worry decreaser used (divide by 3)
 
     def inspect(self, item):
         """Return tuple of new item value and monkey code"""
         level = self.operation.calculate(item)
-        new_level = math.floor(level / 3)
-        if new_level % self.tester == 0:
-            return level, new_level, self.good_monkey
-        return level, new_level, self.bad_monkey
+        if self.worry:
+            level = math.floor(level / 3)
+        if level % self.tester == 0:
+            return level, self.good_monkey
+        return level, self.bad_monkey
 
     def __repr__(self):
         return (
@@ -103,6 +107,8 @@ class Inspector:
 
 class Monkey:
     """Monkey inspecting item worry levels and throwing them"""
+
+    # could use data classes for implementation to make it cleaner
 
     def __init__(self, items, inspector):
         self.items = items
@@ -146,42 +152,73 @@ def parse(data):
     return monkeys
 
 
-def dump(monkeys):
-    """For debugging print monkeys"""
-    for idx, monkey in enumerate(monkeys):
-        print(f"Monkey:{idx} {monkey}")
-
-
 def solve_part1(data):
     """Figure out which monkeys to chase by counting how many items they inspect
     over 20 rounds. What is the level of monkey business after 20 rounds of
     stuff-slinging simian shenanigans?
     """
+
+    def dump(monkeys):
+        """For debugging print monkeys"""
+        for idx, monkey in enumerate(monkeys):
+            print(f"Monkey:{idx} {monkey}")
+
     monkeys = parse(data)
-    for _ in range(20):
-        # print(f"ROUND {i} ===================================")
-        # dump(monkeys)
+    for i in range(20):
+        if utils.VERBOSE:
+            print(f"ROUND {i} ===================================")
+            dump(monkeys)
         for monkey in monkeys:
-            for _, level, next_monkey in monkey.inspects():
+            for level, next_monkey in monkey.inspects():
                 monkeys[next_monkey].add(level)
-    # print("ROUND 20 ===================================")
-    # dump(monkeys)
+    if utils.VERBOSE:
+        print("ROUND 20 ===================================")
+        dump(monkeys)
     hoarders = [x.counter for x in monkeys]
     hoarders = sorted(hoarders)
     return hoarders[-1] * hoarders[-2]
 
 
 def solve_part2(data):
-    """Happy coding"""
-    return len(data)
+    """Worry levels are no longer divided by three after each item is inspected;
+    you'll need to find another way to keep your worry levels manageable.
+    Starting again from the initial state in your puzzle input, what is the
+    level of monkey business after 10000 rounds?
+    """
+
+    def dump(monkeys):
+        """For debugging print monkeys"""
+        for idx, monkey in enumerate(monkeys):
+            print(f"Monkey {idx} inspected items {monkey.counter} times")
+
+    monkeys = parse(data)
+
+    # Use the product of all divisors to keep levels down
+    modulator = math.prod([x.inspector.tester for x in monkeys])
+    # Turn off "divide by 3"
+    for monkey in monkeys:
+        monkey.inspector.worry = False
+
+    inspect = [1, 20, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000]
+    # iterate - kind of brute force :(
+    for i in range(10000):
+        for monkey in monkeys:
+            for level, next_monkey in monkey.inspects():
+                monkeys[next_monkey].add(level % modulator)
+        if utils.VERBOSE and (i + 1) in inspect:
+            print(f"ROUND {i+1} ===================================")
+            dump(monkeys)
+    hoarders = [x.counter for x in monkeys]
+    hoarders = sorted(hoarders)
+    return hoarders[-1] * hoarders[-2]
 
 
 def main():
     data = utils.read_input(__file__)
     result = solve_part1(data)
     print(f"Part 1: {result}")
-    # result = solve_part2(data)
-    # print(f"Part 2: {result}")
+    result = solve_part2(data)
+    print(f"Part 2: {result}")
 
 
 if __name__ == "__main__":
