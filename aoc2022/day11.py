@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import math
+from dataclasses import dataclass
+from typing import Callable
 import utils
 
 # As you finally start making your way upriver, you realize your pack is much
@@ -41,15 +43,15 @@ def parse_num(spec):
     return int(spec.strip().split()[-1])
 
 
+@dataclass
 class Inspector:
     """Test what to do with the item"""
 
-    def __init__(self, operation, tester, good_monkey, bad_monkey):
-        self.operation = operation
-        self.tester = tester
-        self.good_monkey = good_monkey
-        self.bad_monkey = bad_monkey
-        self.worry = True  # is worry decreaser used (divide by 3)
+    operation: Callable[[int], int]
+    tester: int
+    good_monkey: int
+    bad_monkey: int
+    worry: bool = True  # is worry decreaser used (divide by 3)
 
     def inspect(self, item):
         """Return tuple of new item value and monkey code"""
@@ -61,18 +63,16 @@ class Inspector:
         return level, self.bad_monkey
 
     def __repr__(self):
-        return f"inspector:{self.tester} -> {self.good_monkey}/{self.bad_monkey}"
+        return f"test:{self.tester} -> {self.good_monkey}/{self.bad_monkey}"
 
 
+@dataclass
 class Monkey:
     """Monkey inspecting item worry levels and throwing them"""
 
-    # could use data classes for implementation to make it cleaner
-
-    def __init__(self, items, inspector):
-        self.items = items
-        self.inspector = inspector
-        self.counter = 0
+    items: list
+    inspector: Inspector
+    counter: int = 0
 
     def inspects(self):
         """Generator for inspecting one item at time"""
@@ -83,9 +83,6 @@ class Monkey:
 
     def add(self, item):
         self.items.append(item)
-
-    def __repr__(self):
-        return f"items:{self.items} => {self.inspector})"
 
 
 def parse(data):
