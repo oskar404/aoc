@@ -20,53 +20,15 @@ def parse_items(spec):
 
 
 def parse_operation(spec):
-    """Return function object for the operation"""
-
-    class SumOp:
-        """Operation: new = old + 6"""
-
-        def __init__(self, value):
-            self.value = value
-
-        def calculate(self, value):
-            return value + self.value
-
-        def __repr__(self):
-            return f"new = old + {self.value}"
-
-    class MultiplicationOp:
-        """Operation: new = old * 19"""
-
-        def __init__(self, value):
-            self.value = value
-
-        def calculate(self, value):
-            return value * self.value
-
-        def __repr__(self):
-            return f"new = old * {self.value}"
-
-    class PowerOp:
-        """Operation: new = old * old"""
-
-        def __init__(self):
-            pass
-
-        def calculate(self, value):
-            return value * value
-
-        def __repr__(self):
-            return "new = old * old"
-
-    # could use lambda functions to simpliify the implementation
+    """Return function for the operation"""
 
     tokens = spec.strip().split()
     if tokens[4] == "+":
-        return SumOp(int(tokens[5]))
+        return lambda x: x + int(tokens[5])
     if tokens[4] == "*":
         if tokens[5] == "old":
-            return PowerOp()
-        return MultiplicationOp(int(tokens[5]))
+            return lambda x: x * x
+        return lambda x: x * int(tokens[5])
     assert False
 
 
@@ -91,7 +53,7 @@ class Inspector:
 
     def inspect(self, item):
         """Return tuple of new item value and monkey code"""
-        level = self.operation.calculate(item)
+        level = self.operation(item)
         if self.worry:
             level = math.floor(level / 3)
         if level % self.tester == 0:
@@ -99,10 +61,7 @@ class Inspector:
         return level, self.bad_monkey
 
     def __repr__(self):
-        return (
-            f"inspector:{self.tester} -> "
-            f"{self.good_monkey}/{self.bad_monkey} ({self.operation})"
-        )
+        return f"inspector:{self.tester} -> {self.good_monkey}/{self.bad_monkey}"
 
 
 class Monkey:
