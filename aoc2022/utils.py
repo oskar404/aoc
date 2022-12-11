@@ -4,6 +4,10 @@ import argparse
 import re
 
 
+# Flag for solutions to use bit more verbosity
+VERBOSE = False
+
+
 def read_data(input_file):
     """Read input file"""
     with open(input_file, mode="r", encoding="utf-8") as infile:
@@ -34,6 +38,16 @@ def read_input(user):
         metavar="FILE",
         nargs="?",
     )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        default=False,
+        help="Increase verbosity of the solution (if available)",
+        action="store_true",
+    )
     args = parser.parse_args()
+
+    global VERBOSE  # pylint: disable=global-statement
+    VERBOSE = args.verbose
 
     return read_data(args.file)
