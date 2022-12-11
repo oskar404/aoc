@@ -35,12 +35,10 @@ Monkey 3:
 
 
 def test_solution1():
-    utils.VERBOSE = True
-    assert solve_part1(TEST_DATA) == 10605
-    utils.VERBOSE = False
+    with utils.verbose():
+        assert solve_part1(TEST_DATA) == 10605
 
 
 def test_solution2():
-    utils.VERBOSE = True
-    assert solve_part2(TEST_DATA) == 2713310158
-    utils.VERBOSE = False
+    with utils.verbose():
+        assert solve_part2(TEST_DATA) == 2713310158

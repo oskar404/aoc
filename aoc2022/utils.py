@@ -2,10 +2,23 @@
 
 import argparse
 import re
+from contextlib import contextmanager
 
 
 # Flag for solutions to use bit more verbosity
 VERBOSE = False
+
+
+@contextmanager
+def verbose():
+    """Context manager for verbose output.
+    This is not a thread safe implementation
+    """
+    global VERBOSE  # pylint: disable=global-statement
+    original = VERBOSE
+    VERBOSE = True
+    yield
+    VERBOSE = original
 
 
 def read_data(input_file):
