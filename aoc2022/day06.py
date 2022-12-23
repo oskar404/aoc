@@ -23,7 +23,7 @@ def solve_part1(data):
     for idx in range(4, len(data)):
         if marker(data[idx - 4 : idx]):
             return idx
-    assert False
+    raise ValueError("no packet marker found")
 
 
 def solve_part2(data):
@@ -34,7 +34,7 @@ def solve_part2(data):
     for idx in range(14, len(data)):
         if marker(data[idx - 14 : idx]):
             return idx
-    assert False
+    raise ValueError("no packet marker found")
 
 
 def main():

@@ -38,7 +38,7 @@ def solve_part1(data):
         for item in first:
             if item in second:
                 return priority(item)
-        assert False
+        raise ValueError("no common item found")
 
     result = 0
     data = parse_data(data)
@@ -57,7 +57,7 @@ def solve_part2(data):
         for item in elfos[0]:
             if item in elfos[1] and item in elfos[2]:
                 return item
-        assert False
+        raise ValueError("no common item for Elfos")
 
     result = 0
     data = parse_data(data)

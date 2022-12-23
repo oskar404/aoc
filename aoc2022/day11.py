@@ -31,7 +31,7 @@ def parse_operation(spec):
         if tokens[5] == "old":
             return lambda x: x * x
         return lambda x: x * int(tokens[5])
-    assert False
+    raise ValueError(f"unidentified operator in '{spec}'")
 
 
 def parse_num(spec):
