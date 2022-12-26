@@ -45,12 +45,11 @@ def test_edges_method():
     assert len(neighbours) == 4
 
 
-def test_solutionode1():
+def test_solution1():
     with utils.verbose():
         assert solve_part1(MAP) == 31
 
 
-def test_solutionode2():
+def test_solution2():
     with utils.verbose():
-        # just a template for testing
-        assert solve_part2(MAP)
+        assert solve_part2(MAP) == 29

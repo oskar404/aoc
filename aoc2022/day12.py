@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import copy
+import math
 from dataclasses import dataclass
 import utils
 
@@ -191,9 +192,59 @@ def solve_part1(data):
 
 
 def solve_part2(data):
-    """Just template"""
+    """What is the fewest steps required to move starting from any
+    square with elevation a to the location that should get the best
+    signal?
+    """
 
-    return len(data) != 0
+    def manhattan_distance(node):
+        """Return manhattan distance of node relative to end node"""
+        return abs(node.x - end.x) + abs(node.y - end.y)
+
+    mapdata = parse(data)
+
+    # find root/starting point
+    start = []
+    end = None
+    for y, line in enumerate(mapdata):
+        if "E" in line:
+            x = line.index("E")
+            end = Node(x, y, 0, ord("z"))
+            mapdata[y][x] = "z"
+        if "S" in line:
+            x = line.index("S")
+            mapdata[y][x] = "a"
+        if "a" in line:
+            for x, candidate in enumerate(line):
+                if candidate == "a":
+                    start.append(Node(x, y, -1, ord("a")))
+
+    if utils.VERBOSE:
+        print(f"number of candidates: {len(start)=}")
+        print(f"{end=}")
+
+    # sort the nodes based on manhattan distance to check more probable
+    # candidates first
+    start = sorted(start, key=manhattan_distance)
+
+    # boot strap
+    previous = None
+    route_len = math.inf
+
+    # iterate start candidates
+    for candidate in start:
+        distance = manhattan_distance(candidate)
+        if distance < route_len:
+            current_previous, shortest = dijkstra(mapdata, candidate, end)
+            if end in shortest and shortest[end] < route_len:
+                route_len = shortest[end]
+                previous = current_previous
+
+    if utils.VERBOSE:
+        route = get_route(previous, end)
+        dump(route, mapdata)
+
+    return route_len
 
 
 def main():
