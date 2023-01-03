@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import functools
 import utils
 
 
@@ -168,9 +169,26 @@ def solve_part1(data):
 
 
 def solve_part2(data):
-    """Good luck!"""
+    """Organize all of the packets into the correct order. What is the decoder
+    key for the distress signal?
+    """
 
-    return data is not None
+    def wrapper(lhs, rhs):
+        """Wrap compare suitable for functools.cmp_to_key()"""
+        return compare(parse_packet(lhs), parse_packet(rhs))
+
+    packets = ["[[2]]", "[[6]]"]
+
+    raw_packets = parse_data(data)
+    for packet in raw_packets:
+        packets.append(packet["left"])
+        packets.append(packet["right"])
+
+    packets = sorted(packets, key=functools.cmp_to_key(wrapper))
+
+    idx1 = packets.index("[[2]]") + 1
+    idx2 = packets.index("[[6]]") + 1
+    return idx1 * idx2
 
 
 def main():

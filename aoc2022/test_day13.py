@@ -81,6 +81,9 @@ def test_compare():
     run("[]", "[3]", -1)
     run("[[[]]]", "[[]]", 1)
     run("[1,[2,[3,[4,[5,6,7]]]],8,9]", "[1,[2,[3,[4,[5,6,0]]]],8,9]", 1)
+    # run more tests for solution 2
+    run("[[[]]]", "[1,1,3,1,1]", -1)
+    run("[1,1,5,1,1]", "[[1],[2,3,4]]", -1)
 
 
 def test_solution1():
@@ -90,4 +93,4 @@ def test_solution1():
 
 def test_solution2():
     with utils.verbose():
-        assert solve_part2(MESSAGES) is True
+        assert solve_part2(MESSAGES) == 140
