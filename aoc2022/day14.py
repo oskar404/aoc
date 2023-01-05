@@ -10,16 +10,23 @@ import utils
 # doesn't make any sense. However, you do notice a little path that leads
 # behind the waterfall.
 
+
 WALL = "#"
 SAND = "o"
 FREE = " "
+STRT = "+"
 
 Coord = namedtuple("Coord", ["x", "y"])
 
+SOURCE = Coord(500, 0)
+
+
+class SandOverflow(Exception):
+    """Raised by simulation when sand flow outside map"""
+
 
 def parse(data):
-    """Parse data to dict with x,y coordinates as key and "#" value as
-    value"""
+    """Parse data to dict with x,y coordinates as key and "#" value as value"""
 
     def coordinate(spec):
         """Parse "x,y" string into Coord"""
@@ -38,6 +45,7 @@ def parse(data):
                 yield Coord(start.x, y)
 
     walls = {}
+    walls[SOURCE] = STRT
     for path in data.strip().splitlines():
         coords = [coordinate(i) for i in path.strip().split(" -> ")]
         prev = coords[0]
@@ -49,16 +57,10 @@ def parse(data):
     return walls
 
 
-def simulate(data):
-    """Simulate falling sand. Add location of sand into map data
-    where key is x,y coordinates and "o" value as value
+def map_corners(data):
+    """Returns coordinates for left upper corner (min) and right lower
+    corner (max) as tuple
     """
-    return data
-
-
-def dump(data):
-    """Dump the map data to screen"""
-
     min_x = math.inf
     min_y = 0
     max_x = -1
@@ -67,11 +69,44 @@ def dump(data):
         min_x = min(min_x, loc.x)
         max_x = max(max_x, loc.x)
         max_y = max(max_y, loc.y)
+    return (Coord(min_x, min_y), Coord(max_x, max_y))
 
-    for y in range(min_y, max_y + 1):
+
+def simulate(data):
+    """Simulate falling sand. Add location of sand into map data
+    where key is x,y coordinates and "o" value as value
+    """
+    # min_corner, max_corner = map_corners(data)
+
+    def sandflow():
+        """Iterate until stand still"""
+        return []
+
+    # Generate sand until overflow
+    try:
+        # generate sand
+        while True:
+            # sand
+            pos = None
+            for nxt in sandflow():
+                pos = nxt
+            if pos:
+                data[pos] = SAND
+            else:
+                raise SandOverflow
+
+    except SandOverflow:
+        pass
+    return data
+
+
+def dump(data):
+    """Dump the map data to screen"""
+    min_corner, max_corner = map_corners(data)
+    for y in range(min_corner.y, max_corner.y + 1):
         row = [f"{y:3} "]
 
-        for x in range(min_x, max_x + 1):
+        for x in range(min_corner.x, max_corner.x + 1):
             coord = Coord(x, y)
             if coord in data:
                 row.append(data[coord])
