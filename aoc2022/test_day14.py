@@ -16,4 +16,4 @@ def test_solution1():
 
 def test_solution2():
     with utils.verbose():
-        assert solve_part2(WALLS) == 0
+        assert solve_part2(WALLS) == 93

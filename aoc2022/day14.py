@@ -111,6 +111,40 @@ def simulate(data):
     return data
 
 
+def simulate2(data):
+    """Simulate falling sand. Add location of sand into map data
+    where key is x,y coordinates and "o" value as value. Simulation
+    stops when source location is filled
+    """
+    _, max_pos = map_corners(data)
+
+    def accept(pos):
+        """Return true position is acceptable"""
+        if pos not in data and pos.y < max_pos.y + 2:
+            return True
+        return False
+
+    def sandflow():
+        """Get next sand position"""
+        position = SOURCE
+        while True:
+            nxt = Coord(position.x, position.y + 1)
+            if not accept(nxt):
+                nxt = Coord(position.x - 1, position.y + 1)
+                if not accept(nxt):
+                    nxt = Coord(position.x + 1, position.y + 1)
+                    if not accept(nxt):
+                        return position
+            position = nxt
+
+    # generate sand
+    while SOURCE not in data:
+        nxt = sandflow()
+        data[nxt] = SAND
+
+    return data
+
+
 def dump(data):
     """Dump the map data to screen"""
     min_corner, max_corner = map_corners(data)
@@ -126,15 +160,15 @@ def dump(data):
         print("".join(row))
 
 
+def sandcheck(state):
+    """Calculate number of sandunits on map_state"""
+    return len([x for x in state.values() if x == SAND])
+
+
 def solve_part1(data):
     """Using your scan, simulate the falling sand. How many units of
     sand come to rest before sand starts flowing into the abyss below?
     """
-
-    def sandcheck(state):
-        """Calculate number of sandunits on map_state"""
-        return len([x for x in state.values() if x == SAND])
-
     data = parse(data)
     data = simulate(data)
     if utils.VERBOSE:
@@ -146,8 +180,12 @@ def solve_part2(data):
     """Using your scan, simulate the falling sand until the source of
     the sand becomes blocked. How many units of sand come to rest?
     """
-
-    return len(data)
+    data = parse(data)
+    data.pop(SOURCE)  # Easier to check when no "+" for source location
+    data = simulate2(data)
+    if utils.VERBOSE:
+        dump(data)
+    return sandcheck(data)
 
 
 def main():
