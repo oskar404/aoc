@@ -76,24 +76,35 @@ def simulate(data):
     """Simulate falling sand. Add location of sand into map data
     where key is x,y coordinates and "o" value as value
     """
-    # min_corner, max_corner = map_corners(data)
+    min_pos, max_pos = map_corners(data)
+
+    def validate(pos):
+        """Validate position and return it if valid.
+        If not valid raise SandOverflow
+        """
+        if min_pos.x <= pos.x <= max_pos.x and pos.y <= max_pos.y:
+            return pos
+        raise SandOverflow
 
     def sandflow():
-        """Iterate until stand still"""
-        return []
+        """Get next sand position"""
+        position = SOURCE
+        while True:
+            nxt = validate(Coord(position.x, position.y + 1))
+            if nxt in data:
+                nxt = validate(Coord(position.x - 1, position.y + 1))
+                if nxt in data:
+                    nxt = validate(Coord(position.x + 1, position.y + 1))
+                    if nxt in data:
+                        return position
+            position = nxt
 
     # Generate sand until overflow
     try:
         # generate sand
         while True:
-            # sand
-            pos = None
-            for nxt in sandflow():
-                pos = nxt
-            if pos:
-                data[pos] = SAND
-            else:
-                raise SandOverflow
+            nxt = sandflow()
+            data[nxt] = SAND
 
     except SandOverflow:
         pass
@@ -122,16 +133,19 @@ def solve_part1(data):
 
     def sandcheck(state):
         """Calculate number of sandunits on map_state"""
-        return len([x for x in state if x == "o"])
+        return len([x for x in state.values() if x == SAND])
 
     data = parse(data)
-    dump(data)
     data = simulate(data)
+    if utils.VERBOSE:
+        dump(data)
     return sandcheck(data)
 
 
 def solve_part2(data):
-    """Good luck!"""
+    """Using your scan, simulate the falling sand until the source of
+    the sand becomes blocked. How many units of sand come to rest?
+    """
 
     return len(data)
 
