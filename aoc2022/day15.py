@@ -97,22 +97,24 @@ def scan_line(data, distances, y):
         coverage = distances[sensor]
 
         # scan to left from x
-        loc = Coord(sensor.x, y)
-        while manhattan_distance(sensor, loc) <= coverage:
-            if loc in beacons:
-                result[loc] = BCON
-            else:
-                result[loc] = CVER
-            loc = Coord(loc.x - 1, y)
+        lloc = Coord(sensor.x, y)
+        while manhattan_distance(sensor, lloc) <= coverage:
+            if lloc not in result:
+                if lloc in beacons:
+                    result[lloc] = BCON
+                else:
+                    result[lloc] = CVER
+            lloc = Coord(lloc.x - 1, y)
 
         # scan to right from x
-        loc = Coord(sensor.x + 1, y)
-        while manhattan_distance(sensor, loc) <= coverage:
-            if loc in beacons:
-                result[loc] = BCON
-            else:
-                result[loc] = CVER
-            loc = Coord(loc.x + 1, y)
+        rloc = Coord(sensor.x + 1, y)
+        while manhattan_distance(sensor, rloc) <= coverage:
+            if rloc not in result:
+                if rloc in beacons:
+                    result[rloc] = BCON
+                else:
+                    result[rloc] = CVER
+            rloc = Coord(rloc.x + 1, y)
 
     return result
 
