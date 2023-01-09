@@ -89,6 +89,7 @@ def manhattan_distance(loc1, loc2):
     return abs(loc1.x - loc2.x) + abs(loc1.y - loc2.y)
 
 
+@utils.timeit
 def scan_line(data, distances, y):
     """Scan line y to for coverage"""
     result = {}
@@ -117,6 +118,38 @@ def scan_line(data, distances, y):
             rloc = Coord(rloc.x + 1, y)
 
     return result
+
+
+@utils.timeit
+def scan_line2(data, distances, y):
+    """Scan line y to for coverage"""
+    result = {}
+    beacons = set(data.values())
+    for sensor in data.keys():
+        coverage = distances[sensor]
+
+        # scan to left from x
+        lloc = Coord(sensor.x, y)
+        while manhattan_distance(sensor, lloc) <= coverage:
+            if lloc not in result:
+                if lloc in beacons:
+                    result[lloc] = BCON
+                else:
+                    result[lloc] = CVER
+            lloc = Coord(lloc.x - 1, y)
+
+        # scan to right from x
+        rloc = Coord(sensor.x + 1, y)
+        while manhattan_distance(sensor, rloc) <= coverage:
+            if rloc not in result:
+                if rloc in beacons:
+                    result[rloc] = BCON
+                else:
+                    result[rloc] = CVER
+            rloc = Coord(rloc.x + 1, y)
+
+    return result
+
 
 
 def solve_part1(data, y=2000000):
