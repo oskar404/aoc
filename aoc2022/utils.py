@@ -1,19 +1,17 @@
 """ Utilities for all solutions to get rid of copy-pasta """
 
 import argparse
-import datetime
+import contextlib
+import functools
 import re
 import time
-from contextlib import contextmanager
-from functools import wraps
-from typing import Any, Callable
 
 
 # Flag for solutions to use bit more verbosity
 VERBOSE = False
 
 
-@contextmanager
+@contextlib.contextmanager
 def verbose():
     """Context manager for verbose output.
     This is not a thread safe implementation
@@ -25,21 +23,25 @@ def verbose():
     VERBOSE = original
 
 
-# From: https://zyxue.github.io/2017/09/21/python-timeit-decorator.html
+# timeit() decorator originally from:
+# https://zyxue.github.io/2017/09/21/python-timeit-decorator.html
 
-def timeit(func: Callable[..., Any]) -> Callable[..., Any]:
-    """Times a function, usually used as decorator"""
 
-    @wraps(func)
-    def timed_func(*args: Any, **kwargs: Any) -> Any:
-        """Returns the timed function"""
-        start = time.time()
+def timeit(func):
+    """Decorator to time the function execution"""
+
+    @functools.wraps(func)
+    def timer_wrapper(*args, **kwargs):
+        """Returned wrap function printing"""
+        start_tic = time.perf_counter()
         result = func(*args, **kwargs)
-        elapsed = datetime.timedelta(seconds=(time.time() - start))
-        print(f"time {func.__name__}: {elapsed}")
+        end_tic = time.perf_counter()
+        elapsed = start_tic - end_tic
+        if VERBOSE:
+            print(f"time {func.__name__}: {elapsed:0.5f}s")
         return result
 
-    return timed_func
+    return timer_wrapper
 
 
 def read_data(input_file):
