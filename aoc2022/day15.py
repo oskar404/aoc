@@ -113,18 +113,19 @@ def scan_line(data, distances, y):
     return result
 
 
+def collect_distances(data):
+    """Return dict containing distance for each sensor"""
+    distances = {}
+    for sensor, beacon in data.items():
+        distance = manhattan_distance(sensor, beacon)
+        distances[sensor] = distance
+    return distances
+
+
 def solve_part1(data, y=2000000):
     """Consult the report from the sensors you just deployed. In the row
     where y=2000000, how many positions cannot contain a beacon?
     """
-
-    def collect_distances(data):
-        """Return dict containing distance for each sensor"""
-        distances = {}
-        for sensor, beacon in data.items():
-            distance = manhattan_distance(sensor, beacon)
-            distances[sensor] = distance
-        return distances
 
     def coverage(line):
         """Return coverage on the line"""
@@ -137,14 +138,45 @@ def solve_part1(data, y=2000000):
         dump(data)
         print()  # just empty line
         print(f"{y:8} {''.join(line.values())}")
-    return coverage(line) + 1
+    return coverage(line)
 
 
-def solve_part2(data):
+@utils.timeit
+def scan_line2(distances, y, min_x, max_x):
+    """Scan line y and return non covered points"""
+
+    line = set(range(min_x, max_x + 1))
+
+    # project sensors to line and remove covered from line
+    for sensor, distance in distances.items():
+        radius = distance - abs(sensor.y - y)
+        if radius >= 0:
+            coverage = set(range(sensor.x - radius, sensor.x + radius + 1))
+            line = line - coverage
+
+    return line
+
+
+def solve_part2(data, min_p=0, max_p=4000000):
     """Find the only possible position for the distress beacon. What is
     its tuning frequency?"""
-    # Fix this
-    return len(data)
+
+    def tuning_frequency(x, y):
+        return 4000000 * x + y
+
+    result = -1
+
+    data = parse(data)
+    distances = collect_distances(data)
+    for y in range(min_p, max_p + 1):
+        print(f"{y}")
+        line = scan_line2(distances, y, min_p, max_p)
+        if len(line) > 0:
+            assert len(line) == 1
+            result = tuning_frequency(line.pop(), y)
+            break
+
+    return result
 
 
 def main():

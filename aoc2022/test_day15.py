@@ -28,4 +28,4 @@ def test_solution1():
 
 def test_solution2():
     with utils.verbose():
-        assert solve_part2(DATA) == 56000011
+        assert solve_part2(DATA, 0, 20) == 56000011
