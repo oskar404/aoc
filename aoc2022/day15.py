@@ -89,7 +89,6 @@ def manhattan_distance(loc1, loc2):
     return abs(loc1.x - loc2.x) + abs(loc1.y - loc2.y)
 
 
-@utils.timeit
 def scan_line(data, distances, y):
     """Scan line y to for coverage"""
 
@@ -122,6 +121,7 @@ def collect_distances(data):
     return distances
 
 
+@utils.timeit
 def solve_part1(data, y=2000000):
     """Consult the report from the sensors you just deployed. In the row
     where y=2000000, how many positions cannot contain a beacon?
@@ -157,26 +157,64 @@ def scan_line2(distances, y, min_x, max_x):
     return line
 
 
+def stress_signal_candidates(distances, min_p, max_p):
+    """Return possible candidate points for all sensors.
+
+    The distance + 1 from sensor are the possible stress signal candidates
+    """
+    result = set()
+
+    # Add cadidates for each sensor
+    for sensor, distance in distances.items():
+        print(f"{sensor=}")
+        radius = distance + 1
+        for x in range(0, radius + 1):
+            right_x = sensor.x + x
+            left_x = sensor.x - x
+            up_y = sensor.y + (radius - x)
+            down_y = sensor.y - (radius - x)
+            if min_p <= right_x <= max_p and min_p <= up_y <= max_p:
+                result.add(Coord(right_x, up_y))
+            if min_p <= right_x <= max_p and min_p <= down_y <= max_p:
+                result.add(Coord(right_x, down_y))
+            if min_p <= left_x <= max_p and min_p <= up_y <= max_p:
+                result.add(Coord(left_x, up_y))
+            if min_p <= left_x <= max_p and min_p <= down_y <= max_p:
+                result.add(Coord(left_x, down_y))
+
+    return result
+
+
+def stress_signal_location(candidates, distances):
+    """Return the coordinates of the stress signal"""
+    for candidate in candidates:
+        for sensor, beacon_distance in distances.items():
+            distance = manhattan_distance(sensor, candidate)
+            if distance <= beacon_distance:
+                break
+        else:
+            return candidate
+    raise ValueError("no stress signal location found")
+
+
+@utils.timeit
 def solve_part2(data, min_p=0, max_p=4000000):
     """Find the only possible position for the distress beacon. What is
     its tuning frequency?"""
 
-    def tuning_frequency(x, y):
-        return 4000000 * x + y
-
-    result = -1
+    def tuning_frequency(loc):
+        return 4000000 * loc.x + loc.y
 
     data = parse(data)
     distances = collect_distances(data)
-    for y in range(min_p, max_p + 1):
-        print(f"{y}")
-        line = scan_line2(distances, y, min_p, max_p)
-        if len(line) > 0:
-            assert len(line) == 1
-            result = tuning_frequency(line.pop(), y)
-            break
+    candidates = stress_signal_candidates(distances, min_p, max_p)
+    print(f"{len(candidates)=}")
+    stress_signal_loc = stress_signal_location(candidates, distances)
 
-    return result
+    if utils.VERBOSE:
+        print(f"stress signal location {stress_signal_loc}")
+
+    return tuning_frequency(stress_signal_loc)
 
 
 def main():
