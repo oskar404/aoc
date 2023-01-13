@@ -43,7 +43,7 @@ def timeit(func):
         start_tic = time.perf_counter()
         result = func(*args, **kwargs)
         end_tic = time.perf_counter()
-        elapsed = start_tic - end_tic
+        elapsed = end_tic - start_tic
         if TIMING_DATA:
             print(f"{func.__name__}(): {elapsed:0.5f}s")
         return result
