@@ -166,7 +166,8 @@ def stress_signal_candidates(distances, min_p, max_p):
 
     # Add cadidates for each sensor
     for sensor, distance in distances.items():
-        print(f"{sensor=}")
+        if utils.VERBOSE:
+            print(f"{sensor=}")
         radius = distance + 1
         for x in range(0, radius + 1):
             right_x = sensor.x + x
@@ -208,7 +209,8 @@ def solve_part2(data, min_p=0, max_p=4000000):
     data = parse(data)
     distances = collect_distances(data)
     candidates = stress_signal_candidates(distances, min_p, max_p)
-    print(f"{len(candidates)=}")
+    if utils.VERBOSE:
+        print(f"{len(candidates)=}")
     stress_signal_loc = stress_signal_location(candidates, distances)
 
     if utils.VERBOSE:
