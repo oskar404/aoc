@@ -10,6 +10,9 @@ import time
 # Flag for solutions to use bit more verbosity
 VERBOSE = False
 
+# Flag for solutions to print timeit decorator results
+TIMING_DATA = False
+
 
 @contextlib.contextmanager
 def verbose():
@@ -17,10 +20,14 @@ def verbose():
     This is not a thread safe implementation
     """
     global VERBOSE  # pylint: disable=global-statement
-    original = VERBOSE
+    original_verbosity = VERBOSE
+    global TIMING_DATA  # pylint: disable=global-statement
+    original_timing = TIMING_DATA
     VERBOSE = True
+    TIMING_DATA = True
     yield
-    VERBOSE = original
+    VERBOSE = original_verbosity
+    TIMING_DATA = original_timing
 
 
 # timeit() decorator originally from:
@@ -37,8 +44,8 @@ def timeit(func):
         result = func(*args, **kwargs)
         end_tic = time.perf_counter()
         elapsed = start_tic - end_tic
-        if VERBOSE:
-            print(f"time {func.__name__}: {elapsed:0.5f}s")
+        if TIMING_DATA:
+            print(f"{func.__name__}(): {elapsed:0.5f}s")
         return result
 
     return timer_wrapper
@@ -81,9 +88,18 @@ def read_input(user):
         help="Increase verbosity of the solution (if available)",
         action="store_true",
     )
+    parser.add_argument(
+        "-t",
+        "--timer",
+        default=False,
+        help="Print timing data",
+        action="store_true",
+    )
     args = parser.parse_args()
 
     global VERBOSE  # pylint: disable=global-statement
     VERBOSE = args.verbose
+    global TIMING_DATA  # pylint: disable=global-statement
+    TIMING_DATA = args.timer
 
     return read_data(args.file)
