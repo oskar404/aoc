@@ -107,7 +107,7 @@ def parse_packet(spec):
     return root
 
 
-# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-return-statements,consider-using-enumerate
 def compare(lhs, rhs):
     """Compare two node trees.
 
