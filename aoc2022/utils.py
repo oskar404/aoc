@@ -92,7 +92,10 @@ def read_input(user):
         "-t",
         "--timer",
         default=False,
-        help="Print timing data",
+        help=(
+            "Print timing data. Useful for performance monitoring. "
+            "Requires usage of @utils.timeit decorator"
+        ),
         action="store_true",
     )
     args = parser.parse_args()
