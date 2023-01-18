@@ -19,8 +19,19 @@ import utils
 
 
 def parse(data):
-    """Parse input data"""
-    return data
+    """Parse input data of format:
+
+    Valve DR has flow rate=22; tunnels lead to valves DC, YA
+    """
+    result = {}
+    for line in data.strip().splitlines():
+        part1, _, part2 = line.partition("; ")
+        part1 = part1.strip().split()
+        valve = part1[1]
+        flow = int(part1[-1].split("=")[1])
+        tunnels = {x.rstrip(",") for x in part2.strip().split()[4:]}
+        result[valve] = {"flow": flow, "tunnels": tunnels}
+    return result
 
 
 @utils.timeit
@@ -29,6 +40,7 @@ def solve_part1(data):
     What is the most pressure you can release?
     """
     data = parse(data)
+    print(f"{data=}")
     return len(data)
 
 
