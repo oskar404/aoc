@@ -11,6 +11,8 @@ like this:
 
     ./day01.py input01.txt
 
+For more information run python script with `--help`
+
 To run tests and linting and other things just run:
 
     make
