@@ -41,6 +41,50 @@ def solve_part1(data: str) -> int:
     return total
 
 
+valid_digits = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+}
+
+
+def solve_part2(data: str):
+    """path 2 stub"""
+
+    def find_digit(string: str, reverse: bool = False) -> int:
+        """Find first digit in string"""
+        if reverse:
+            string = string[::-1]
+        for i, char in enumerate(string):
+            if char.isdigit():
+                return int(char)
+            # check is string starts with a valid digit name
+            candidate = string[i : i + 5]
+            for key, value in valid_digits.items():
+                if reverse:
+                    key = key[::-1]
+                if candidate.startswith(key):
+                    return value
+        assert False, "No digit found"
+
+    total = 0
+    for line in data.splitlines():
+        # get first and last digit
+        first = find_digit(line)
+        last = find_digit(line, reverse=True)
+        # combine to form a single two-digit number
+        number = first * 10 + last
+        # add to sum
+        total += number
+    return total
+
+
 def read_input(input_file: str) -> str:
     """Read input file"""
     with open(input_file, mode="r", encoding="utf-8") as infile:
@@ -70,6 +114,8 @@ def main():
     data = read_input(args.file)
     result = solve_part1(data)
     print(f"Part 1: {result}")
+    result = solve_part2(data)
+    print(f"Part 2: {result}")
 
 
 if __name__ == "__main__":
