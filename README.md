@@ -3,7 +3,7 @@
 
 Solving the advent calendar: https://adventofcode.com/
 
-Current endeavour: [Year 2022 Advent of Code](aoc2022/README.md)
+Current endeavour: [Year 2023 Advent of Code](aoc2023/README.md)
 
 Previous solutions:
 
@@ -12,3 +12,4 @@ Previous solutions:
 - [Year 2020 Advent of Code](aoc2020/README.md)
 - [Year 2021 Advent of Code](aoc2021/README.md)
 - [Year 2022 Advent of Code](aoc2022/README.md)
+- [Year 2023 Advent of Code](aoc2023/README.md)
