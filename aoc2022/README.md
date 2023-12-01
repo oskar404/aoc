@@ -1,4 +1,4 @@
-# Advent of Code 2021
+# Advent of Code 2022
 
 Star fruit hunt in the jungle .. The Elves have brought you on their annual expedition to the grove where the fruit grows.
 
