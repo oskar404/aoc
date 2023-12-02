@@ -94,6 +94,7 @@ def read_input(input_file: str) -> str:
 def create_parser() -> argparse.ArgumentParser:
     """ArgumentParser factory method"""
     parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
         description=__doc__,
         epilog="More info on https://adventofcode.com/2023",
     )
