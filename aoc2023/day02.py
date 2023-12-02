@@ -39,7 +39,7 @@ def parse(data: str) -> dict[int, list[dict[str, int]]]:
 
 
 def solve_part1(data: str) -> int:
-    """What is the sum of all of the calibration values?"""
+    """What is the sum of game IDs of all valid games?"""
 
     def possible(draw: dict[str, int]) -> bool:
         """Check if draw is possible with the cubes in the bag"""
@@ -52,7 +52,6 @@ def solve_part1(data: str) -> int:
     games = parse(data)
     total = 0
     for game_id, game in games.items():
-        # get first and last digit
         valid = True
         for draw in game:
             if not possible(draw):
@@ -60,6 +59,22 @@ def solve_part1(data: str) -> int:
                 break
         if valid:
             total += game_id
+    return total
+
+
+def solve_part2(data: str) -> int:
+    """what is the fewest number of cubes of each color that could have
+    been in the bag to make the game possible?
+    """
+    games = parse(data)
+    total = 0
+    for game in games.values():
+        bag = {"red": 0, "green": 0, "blue": 0}
+        for draw in game:
+            for color, count in draw.items():
+                if bag[color] < count:
+                    bag[color] = count
+        total += bag["red"] * bag["green"] * bag["blue"]
     return total
 
 
@@ -93,6 +108,8 @@ def main():
     data = read_input(args.file)
     result = solve_part1(data)
     print(f"Part 1: {result}")
+    result = solve_part2(data)
+    print(f"Part 2: {result}")
 
 
 if __name__ == "__main__":

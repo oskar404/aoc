@@ -14,3 +14,8 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
 def test_solution1():
     result = day02.solve_part1(DATA.strip())
     assert result == 8
+
+
+def test_solution2():
+    result = day02.solve_part2(DATA.strip())
+    assert result == 2286
