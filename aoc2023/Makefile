@@ -6,6 +6,7 @@ lint:
 	black *.py
 	flake8 *.py
 	pylint *.py
+	mypy *.py
 
 test:
 	pytest

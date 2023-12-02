@@ -22,7 +22,7 @@ import argparse
 def solve_part1(data: str) -> int:
     """What is the sum of all of the calibration values?"""
 
-    def find_digit(string: str) -> int:
+    def find_digit(string) -> int:
         """Find first digit in string"""
         for char in string:
             if char.isdigit():
