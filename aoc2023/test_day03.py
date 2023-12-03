@@ -36,3 +36,8 @@ def test_solution1():
     assert result == 4361
     result = day03.solve_part1(DATA2.strip())
     assert result == 413
+
+
+def test_solution2():
+    result = day03.solve_part2(DATA.strip())
+    assert result == 467835

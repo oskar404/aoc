@@ -17,6 +17,7 @@ offer to help.
 
 import argparse
 import collections
+import math
 import pathlib
 import re
 
@@ -93,7 +94,32 @@ def solve_part1(data: str) -> int:
             for part in edges & part_list:
                 part_codes[part].append(int(code.group()))
 
-    return sum(sum(part) for part in part_codes.values())
+    return sum(sum(parts) for parts in part_codes.values())
+
+
+def solve_part2(data: str) -> int:
+    """What is the sum of all of the gear ratios in your engine schematic?"""
+
+    # moro or less copy paste from part 1
+    part_list = parse(data)
+
+    def get_edges(row: int, start_col: int, end_col: int) -> set[tuple[int, int]]:
+        """Return the edge coordinates of a current code"""
+        return {
+            (x, y)
+            for y in (row - 1, row, row + 1)
+            for x in range(start_col - 1, end_col + 1)
+        }
+
+    part_codes = collections.defaultdict(list)
+    rows = data.splitlines()
+    for y, row in enumerate(rows):
+        for code in re.finditer(r"\d+", row):
+            edges = get_edges(y, code.start(), code.end())
+            for part in edges & part_list:
+                part_codes[part].append(int(code.group()))
+
+    return sum(math.prod(parts) for parts in part_codes.values() if len(parts) > 1)
 
 
 def main():
@@ -103,6 +129,8 @@ def main():
     data = read_input(args.file)
     result = solve_part1(data)
     print(f"Part 1: {result}")
+    result = solve_part2(data)
+    print(f"Part 2: {result}")
 
 
 if __name__ == "__main__":
