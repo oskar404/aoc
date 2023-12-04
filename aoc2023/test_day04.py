@@ -15,3 +15,8 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
 def test_solution1():
     result = day04.solve_part1(DATA.strip())
     assert result == 13
+
+
+def test_solution2():
+    result = day04.solve_part2(DATA.strip())
+    assert result == 30

@@ -34,6 +34,7 @@ table (your puzzle input).
 """
 
 import argparse
+import math
 import pathlib
 import re
 
@@ -77,17 +78,33 @@ def read_input(input_file: str) -> str:
 def solve_part1(data: str) -> int:
     """How many points are they worth in total?"""
 
-    card_values = []
+    card_wins = []
     for card in data.splitlines():
         part1, part2 = card.split(":")[1].split("|")
-        winning = list(map(int, part1.split()))
-        numbers = list(map(int, part2.split()))
-        card_value = 0
-        for draw in numbers:
-            if draw in winning:
-                card_value = 1 if card_value == 0 else card_value * 2
-        card_values.append(card_value)
-    return sum(card_values)
+        winning = set(map(int, part1.split()))
+        numbers = set(map(int, part2.split()))
+        wins = winning & numbers
+        value = int(math.pow(2, len(wins) - 1)) if len(wins) > 0 else 0
+        card_wins.append(value)
+    return sum(card_wins)
+
+
+def solve_part2(data: str) -> int:
+    """how many total scratchcards do you end up with?"""
+    cards = data.splitlines()
+    size = len(cards)
+    count = [1] * size
+    for i, card in enumerate(cards):
+        part1, part2 = card.split(":")[1].split("|")
+        winning = set(map(int, part1.split()))
+        numbers = set(map(int, part2.split()))
+        wins = winning & numbers
+        if len(wins) > 0:
+            for j in range(i + 1, i + len(wins) + 1):
+                if j >= size:
+                    break
+                count[j] += count[i]
+    return sum(count)
 
 
 def main():
@@ -97,6 +114,8 @@ def main():
     data = read_input(args.file)
     result = solve_part1(data)
     print(f"Part 1: {result}")
+    result = solve_part2(data)
+    print(f"Part 2: {result}")
 
 
 if __name__ == "__main__":
