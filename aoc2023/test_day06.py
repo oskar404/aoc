@@ -11,3 +11,8 @@ Distance:  9  40  200
 def test_solution1():
     result = day06.solve_part1(DATA.strip())
     assert result == 288
+
+
+def test_solution2():
+    result = day06.solve_part2(DATA.strip())
+    assert result == 71503

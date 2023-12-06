@@ -77,6 +77,23 @@ def solve_part1(data: str) -> int:
     return math.prod(faster)
 
 
+def solve_part2(data: str) -> int:
+    """How many ways can you beat the record in this one much longer race?"""
+
+    lines = data.splitlines()
+    time = int(lines[0].split(":")[1].replace(" ", ""))
+    record = int(lines[1].split(":")[1].replace(" ", ""))
+
+    limit = 0
+    for i in range(1, time // 2):
+        distance = i * (time - i)
+        if distance > record:
+            limit = i
+            break
+
+    return time - (2 * limit) + 1
+
+
 def main():
     """Main entry for script"""
     parser = create_parser()
@@ -84,6 +101,8 @@ def main():
     data = read_input(args.file)
     result = solve_part1(data)
     print(f"Part 1: {result}")
+    result = solve_part2(data)
+    print(f"Part 2: {result}")
 
 
 if __name__ == "__main__":
