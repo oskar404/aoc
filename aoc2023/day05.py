@@ -24,6 +24,7 @@ we're having trouble making sense of it."
 import argparse
 import pathlib
 import re
+from typing import Optional
 
 
 def _day(filename: str = __file__) -> str:
@@ -62,26 +63,76 @@ def read_input(input_file: str) -> str:
         return infile.read()
 
 
+class Range:
+    """Provides a range mapped to destination range"""
+
+    def __init__(self, start: int, rng: int) -> None:
+        """Initialize with start and range"""
+        self.start = start
+        self.end = start + (rng - 1)
+
+    def __repr__(self) -> str:
+        """Return string representation"""
+        return f"({self.start}-{self.end})"
+
+    def min(self) -> int:
+        """Return minimum value of range"""
+        return self.start
+
+    def max(self) -> int:
+        """Return maximum value of range"""
+        return self.end
+
+
 class RangeMap:
     """Provides a source range mapped to destination range"""
 
     def __init__(self, src: int, dst: int, rng: int) -> None:
         """Initialize with source, destination, and range"""
-        self.src = src
+        self.first = src
+        self.last = src + rng - 1
         self.dst = dst
-        self.rng = rng
 
     def __contains__(self, src: int) -> bool:
         """Return True if src is in range"""
-        return src in range(self.src, self.src + self.rng)
+        return src in range(self.first, self.last + 1)
 
     def __getitem__(self, src: int) -> int:
         """Returns value for src. Does not check if inside range"""
-        return self.dst + (src - self.src)
+        return self.dst + (src - self.first)
 
     def __repr__(self) -> str:
         """Return string representation"""
-        return f"({self.src}-{self.src + self.rng})->({self.dst}-{self.dst + self.rng})"
+        sources = f"{self.first}-{self.last}"
+        destinations = f"{self.dst}-{self.dst + (self.last - self.first)}"
+        return f"({sources})->({destinations})"
+
+    def map_range(
+        self, src: Range
+    ) -> Optional[tuple[Range | None, Range, Range | None]]:
+        """Return list of ranges if part source range
+
+        Returns None if source range is not in this range
+        If in range, first item is unmapped range before mapping, second
+        is mapped range, and last one is unmapped range after mapping
+        """
+        # Check outside range
+        if src.max() < self.first or src.min() > self.last:
+            return None
+        # Must be inside range
+        before = None
+        mapped = None
+        after = None
+        start = src.min()
+        end = src.max()
+        if src.min() < self.first:
+            before = Range(src.min(), self.first - src.min())
+            start = self.first
+        if src.max() > self.last:
+            after = Range(self.last + 1, src.max() - self.last)
+            end = self.last
+        mapped = Range(self.dst + (start - self.first), end - start + 1)
+        return before, mapped, after
 
 
 class AlmanacMap:
@@ -111,6 +162,28 @@ class AlmanacMap:
         """Return string representation"""
         return f"{self.name}\n{self.ranges}\n"
 
+    def map_range(self, rng: Range) -> list[Range]:
+        """Return list of Ranges"""
+        results: list[Range] = []
+        cache = [rng]
+        for mapper in self.ranges:
+            data = cache
+            cache = []
+            for item in data:
+                mapping = mapper.map_range(item)
+                if mapping:
+                    before, mapped, after = mapping
+                    results.append(mapped)
+                    if before:
+                        cache.append(before)
+                    if after:
+                        cache.append(after)
+                else:
+                    cache.append(item)
+        if cache:
+            results.extend(cache)
+        return results
+
 
 def parse(data: str) -> tuple[list[int], list[AlmanacMap]]:
     """Parse data into a list of AlmanacMap objects"""
@@ -136,6 +209,22 @@ def solve_part1(data: str) -> int:
     return min(seeds)
 
 
+def solve_part2(data: str) -> int:
+    """What is the lowest location number that corresponds to any of the
+    initial seed numbers?
+    """
+    init_seeds, almanac = parse(data)
+    seeds = [
+        Range(init_seeds[i], init_seeds[i + 1]) for i in range(0, len(init_seeds), 2)
+    ]
+    for page in almanac:
+        cache: list[Range] = []
+        for seed in seeds:
+            cache = cache + page.map_range(seed)
+        seeds = cache
+    return min(seed.min() for seed in seeds)
+
+
 def main():
     """Main entry for script"""
     parser = create_parser()
@@ -143,6 +232,8 @@ def main():
     data = read_input(args.file)
     result = solve_part1(data)
     print(f"Part 1: {result}")
+    result = solve_part2(data)
+    print(f"Part 2: {result}")
 
 
 if __name__ == "__main__":
