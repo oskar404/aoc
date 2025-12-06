@@ -13,3 +13,4 @@ Previous solutions:
 - [Year 2021 Advent of Code](aoc2021/README.md)
 - [Year 2022 Advent of Code](aoc2022/README.md)
 - [Year 2023 Advent of Code](aoc2023/README.md)
+- [Year 2025 Advent of Code](aoc2025/README.md)
